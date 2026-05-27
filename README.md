@@ -1,12 +1,14 @@
-# ThreeKingdoms AI Venture
+# 汉末·往昔之影
 
 一款以汉末三国为背景的 AI 叙事经营游戏。玩家从无名之人入局，在城池、门派、人脉、军旅、江湖和情感线之间做选择，通过固定规则与大模型叙事共同推进属于自己的乱世履历。
 
 当前项目已经迁移到 `Vue 3 + Vite`，后端仍是 Node 单服务架构。生产环境下同一个 Node 服务同时提供前端页面、`/api/*` 接口和流式回合叙事。
 
+在线演示：[https://thinkingwheretogo.asia/#/](https://thinkingwheretogo.asia/#/)
+
 ## 游戏简介
 
-游戏标题：`汉末往事之卷` / `汉末风云录`
+游戏标题：`汉末·往昔之影`
 
 核心体验：
 
@@ -77,6 +79,14 @@
 ### 食物与道具
 
 食物在 `server/game/chronicleV5FoodConfig.js` 中配置。每种食物包含地区、稀有度、风味文本、即时数值变化和临时增益。开局会随机发放部分常见或非常见食物。
+
+## 支持与打赏
+
+如果你喜欢这个项目，可以通过微信或支付宝支持后续开发。
+
+| 微信 | 支付宝 |
+| --- | --- |
+| <img src="static/donation/wechat-pay.png" alt="微信打赏二维码" width="220"> | <img src="static/donation/alipay-pay.png" alt="支付宝打赏二维码" width="220"> |
 
 ## 技术栈
 
