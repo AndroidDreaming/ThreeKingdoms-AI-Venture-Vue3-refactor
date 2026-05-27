@@ -4,8 +4,6 @@
 
 当前项目已经迁移到 `Vue 3 + Vite`，后端仍是 Node 单服务架构。生产环境下同一个 Node 服务同时提供前端页面、`/api/*` 接口和流式回合叙事。
 
-在线演示：[https://thinkingwheretogo.asia/#/](https://thinkingwheretogo.asia/#/)
-
 ## 游戏简介
 
 游戏标题：`汉末·往昔之影`
