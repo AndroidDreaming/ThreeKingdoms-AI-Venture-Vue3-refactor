@@ -1,0 +1,47 @@
+{
+  "name": "sanguo_ai",
+  "version": "1.0.0",
+  "description": "sanguo ai game",
+  "author": "DESKTOP-RJ3G7G3\\Bear <decayedteeth@163.com>",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "server": "node server/indexCampaignV5ServerManagedV2.js",
+    "start": "node server/indexCampaignV5ServerManagedV2.js",
+    "lint": "eslint --ext .js,.vue src",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.5.13",
+    "vue-router": "^4.4.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.1.4",
+    "autoprefixer": "^10.4.20",
+    "babel-eslint": "^8.2.1",
+    "eslint": "^4.15.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-friendly-formatter": "^3.0.0",
+    "eslint-loader": "^1.7.1",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-node": "^5.2.0",
+    "eslint-plugin-promise": "^3.4.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "eslint-plugin-vue": "^4.7.1",
+    "less": "^3.9.0",
+    "node-notifier": "^5.1.2",
+    "postcss-import": "^11.0.0",
+    "postcss-url": "^7.2.1",
+    "vite": "^5.4.10"
+  },
+  "engines": {
+    "node": ">= 18.0.0",
+    "npm": ">= 9.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
+}

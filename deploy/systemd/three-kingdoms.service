@@ -1,0 +1,16 @@
+[Unit]
+Description=ThreeKingdoms AI Venture
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/three-kingdoms
+EnvironmentFile=/etc/three-kingdoms/three-kingdoms.env
+ExecStart=/opt/three-kingdoms/scripts/start-production.sh
+Restart=always
+RestartSec=3
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target

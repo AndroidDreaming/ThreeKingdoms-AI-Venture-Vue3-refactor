@@ -1,0 +1,195 @@
+{
+  "sessionId": "tk_mo2md7dm_mix4cv",
+  "saveTime": "2026-04-17T13:03:11.593Z",
+  "settings": {
+    "apiBaseUrl": "",
+    "apiKey": "",
+    "model": "local-fallback"
+  },
+  "world": {
+    "scriptId": "coalition",
+    "scriptName": "关东盟局",
+    "scriptSummary": "董卓专权，诸侯会盟，盟誓之下各怀盘算，真正先碎掉的往往是军心。",
+    "stageIndex": 0,
+    "stageName": "盟旗初起",
+    "turn": 0,
+    "year": 190,
+    "month": 1,
+    "season": "春",
+    "dateLabel": "初平1年春正月",
+    "location": "陈留驿道",
+    "objective": "先定下自己的出身，再找准第一块可以落脚的地方。",
+    "weather": "薄阴",
+    "pressure": 0,
+    "lastTopic": "origin"
+  },
+  "gameState": {
+    "name": "无名小卒",
+    "gender": "男",
+    "age": 20,
+    "background": "",
+    "identity": "布衣",
+    "faction": "未定",
+    "health": 100,
+    "maxHealth": 100,
+    "attack": 5,
+    "defense": 5,
+    "agility": 5,
+    "charm": 5,
+    "coins": 50,
+    "troops": 0,
+    "renown": 0,
+    "domestic": 4,
+    "diplomacy": 4,
+    "military": 4,
+    "conquest": 3,
+    "romance": 0,
+    "skills": [
+      {
+        "name": "乱世自保",
+        "description": "局势不明时，知道先看风向再落子。",
+        "icon": "fa-solid fa-shield-halved"
+      }
+    ],
+    "items": [],
+    "relationships": [
+      {
+        "id": "qulige",
+        "name": "曲离歌",
+        "title": "江湖隐士",
+        "status": "初识未深",
+        "affection": 0,
+        "trust": 10,
+        "romanceable": false,
+        "description": "江湖隐士，寡言锋利，像是总能先一步听见风向里的祸福。"
+      },
+      {
+        "id": "shen_zhiwei",
+        "name": "沈知微",
+        "title": "郡府书吏",
+        "status": "初识未深",
+        "affection": 0,
+        "trust": 0,
+        "romanceable": true,
+        "description": "郡府书吏，言辞温静，写得一手漂亮章表，眼里却常藏着戒心。"
+      },
+      {
+        "id": "huo_qinglan",
+        "name": "霍青岚",
+        "title": "营中偏将",
+        "status": "初识未深",
+        "affection": 0,
+        "trust": 0,
+        "romanceable": true,
+        "description": "营中偏将，行事利落，惯在军中压住杂声，少见柔色。"
+      },
+      {
+        "id": "lu_yunyao",
+        "name": "陆云瑶",
+        "title": "盐铁商会管事",
+        "status": "初识未深",
+        "affection": 0,
+        "trust": 0,
+        "romanceable": true,
+        "description": "盐铁商会管事，眼光很快，笑意从不白给，知道什么叫价码。"
+      }
+    ],
+    "achievements": [
+      {
+        "id": "first_choice",
+        "text": "初入乱世：定下自己的出身与第一步去路",
+        "unlocked": false
+      },
+      {
+        "id": "domestic_name",
+        "text": "抚民有成：地方开始记住你的手段",
+        "unlocked": false
+      },
+      {
+        "id": "diplomatic_name",
+        "text": "唇舌动人：你能让原本不肯点头的人重新坐下",
+        "unlocked": false
+      },
+      {
+        "id": "war_banner",
+        "text": "军旗初振：你的军令第一次真能压住人心",
+        "unlocked": false
+      },
+      {
+        "id": "first_victory",
+        "text": "锋刃见血：你踏下了第一场真正的胜势",
+        "unlocked": false
+      },
+      {
+        "id": "romance_seed",
+        "text": "情意生根：有人开始在灯下等你一句回音",
+        "unlocked": false
+      }
+    ],
+    "adventureLog": [],
+    "turn": 0
+  },
+  "memory": {
+    "recentIntents": [],
+    "recentTopics": [],
+    "majorEvents": [],
+    "openThreads": [
+      {
+        "key": "alliance_crack",
+        "title": "盟军粮道不稳，诸侯之间已生观望之意",
+        "urgency": 2,
+        "domain": "diplomacy"
+      },
+      {
+        "key": "camp_order",
+        "title": "军营内掠夺滋生，再不整饬便要先乱己阵",
+        "urgency": 1,
+        "domain": "military"
+      }
+    ],
+    "summaries": [],
+    "loopWarnings": 0,
+    "romanceTargetId": "shen_zhiwei"
+  },
+  "scene": {
+    "title": "卷首未定",
+    "text": "初平1年春正月，关东盟局的阴影已经压到眼前。你只是一个尚未被世道记住的男子，没有现成靠山，没有稳当去处，身边只有几样薄物和一口不肯轻易认输的气。门外风过枯草，你知道，真正改写命数的，从来不在出身高低，而在你准备怎样迈出第一步。",
+    "summary": "你已来到乱世门前，只差替自己选定第一层身份。",
+    "imagePrompt": "关东盟局，陈留驿道，汉末，春天，薄阴，写意",
+    "imageUrl": "",
+    "statusLine": "关东盟局 · 陈留驿道",
+    "mode": "fallback"
+  },
+  "choices": [
+    {
+      "id": "background:imperial_kin",
+      "text": "宗室旁支",
+      "hint": "以“寒微宗亲”的身份步入乱世。",
+      "risk": "低"
+    },
+    {
+      "id": "background:local_gentry",
+      "text": "地方豪右",
+      "hint": "以“乡亭豪强”的身份步入乱世。",
+      "risk": "低"
+    },
+    {
+      "id": "background:fallen_scholar",
+      "text": "失路书生",
+      "hint": "以“寒门士子”的身份步入乱世。",
+      "risk": "低"
+    },
+    {
+      "id": "background:merchant_heir",
+      "text": "商旅后裔",
+      "hint": "以“行商之后”的身份步入乱世。",
+      "risk": "低"
+    },
+    {
+      "id": "background:refugee",
+      "text": "乱世流民",
+      "hint": "以“流民”的身份步入乱世。",
+      "risk": "低"
+    }
+  ]
+}

@@ -1,0 +1,231 @@
+{
+  "sessionId": "tk_mo2p3yj1_8qbf8h",
+  "saveTime": "2026-04-17T09:18:40.694Z",
+  "settings": {
+    "apiBaseUrl": "",
+    "apiKey": "",
+    "model": "local-fallback"
+  },
+  "world": {
+    "scriptId": "yellow_turban",
+    "scriptName": "黄巾余波",
+    "scriptSummary": "黄巾余焰未灭，郡县失序，豪强、流民与寒门都在抢一块能立足的地方。",
+    "stageIndex": 0,
+    "stageName": "州郡震荡",
+    "turn": 1,
+    "year": 184,
+    "month": 2,
+    "season": "春",
+    "dateLabel": "中平1年春二月",
+    "location": "冀州乡亭",
+    "objective": "先把局势看清，再决定真正要押的是哪一边。",
+    "weather": "急风",
+    "pressure": 0,
+    "lastTopic": "unknown"
+  },
+  "gameState": {
+    "name": "无名小卒",
+    "gender": "女",
+    "age": 21.08,
+    "background": "失路书生",
+    "identity": "寒门士子",
+    "faction": "自立",
+    "health": 100,
+    "maxHealth": 100,
+    "attack": 5,
+    "defense": 5,
+    "agility": 5,
+    "charm": 5,
+    "coins": 58,
+    "troops": 0,
+    "renown": 0,
+    "domestic": 6,
+    "diplomacy": 5,
+    "military": 4,
+    "conquest": 3,
+    "romance": 0,
+    "skills": [
+      {
+        "name": "乱世自保",
+        "description": "局势不明时，知道先看风向再落子。",
+        "icon": "fa-solid fa-shield-halved"
+      },
+      {
+        "name": "章表筹画",
+        "description": "能写能算，擅长从杂乱信息里理出次序。",
+        "icon": "fa-solid fa-feather-pointed"
+      }
+    ],
+    "items": [
+      {
+        "name": "残卷兵书",
+        "count": 1
+      }
+    ],
+    "relationships": [
+      {
+        "id": "qulige",
+        "name": "曲离歌",
+        "title": "江湖隐士",
+        "status": "初识未深",
+        "affection": 0,
+        "trust": 10,
+        "romanceable": false,
+        "description": "江湖隐士，寡言锋利，像是总能先一步听见风向里的祸福。"
+      },
+      {
+        "id": "shen_zhiwei",
+        "name": "沈知微",
+        "title": "郡府书吏",
+        "status": "初识未深",
+        "affection": 0,
+        "trust": 0,
+        "romanceable": true,
+        "description": "郡府书吏，言辞温静，写得一手漂亮章表，眼里却常藏着戒心。"
+      },
+      {
+        "id": "huo_qinglan",
+        "name": "霍青岚",
+        "title": "营中偏将",
+        "status": "初识未深",
+        "affection": 0,
+        "trust": 0,
+        "romanceable": true,
+        "description": "营中偏将，行事利落，惯在军中压住杂声，少见柔色。"
+      },
+      {
+        "id": "lu_yunyao",
+        "name": "陆云瑶",
+        "title": "盐铁商会管事",
+        "status": "初识未深",
+        "affection": 0,
+        "trust": 0,
+        "romanceable": true,
+        "description": "盐铁商会管事，眼光很快，笑意从不白给，知道什么叫价码。"
+      }
+    ],
+    "achievements": [
+      {
+        "id": "first_choice",
+        "text": "初入乱世：定下自己的出身与第一步去路",
+        "unlocked": true
+      },
+      {
+        "id": "domestic_name",
+        "text": "抚民有成：地方开始记住你的手段",
+        "unlocked": false
+      },
+      {
+        "id": "diplomatic_name",
+        "text": "唇舌动人：你能让原本不肯点头的人重新坐下",
+        "unlocked": false
+      },
+      {
+        "id": "war_banner",
+        "text": "军旗初振：你的军令第一次真能压住人心",
+        "unlocked": false
+      },
+      {
+        "id": "first_victory",
+        "text": "锋刃见血：你踏下了第一场真正的胜势",
+        "unlocked": false
+      },
+      {
+        "id": "romance_seed",
+        "text": "情意生根：有人开始在灯下等你一句回音",
+        "unlocked": false
+      }
+    ],
+    "adventureLog": [
+      {
+        "turn": 1,
+        "dateLabel": "中平1年春二月",
+        "entry": "中平1年春二月，你在“临机应变”上落下一子，先把局势看清，再决定真正要押的是哪一边。"
+      }
+    ],
+    "turn": 1
+  },
+  "memory": {
+    "recentIntents": [
+      {
+        "intent": "unknown",
+        "score": 6,
+        "tier": "fail",
+        "actionText": "????",
+        "topic": "unknown"
+      }
+    ],
+    "recentTopics": [
+      "unknown"
+    ],
+    "majorEvents": [
+      "中平1年春二月，你在“临机应变”上落下一子，先把局势看清，再决定真正要押的是哪一边。"
+    ],
+    "openThreads": [
+      {
+        "key": "grain_shortage",
+        "title": "乡里粮仓将尽，流民与乡勇都盯着最后几车粟米",
+        "urgency": 2,
+        "domain": "domestic"
+      },
+      {
+        "key": "county_envoy",
+        "title": "县府使吏将至，也许带来招徕，也可能带来盘剥",
+        "urgency": 1,
+        "domain": "diplomacy"
+      },
+      {
+        "key": "unknown_1",
+        "title": "新的裂缝正在暗处张开",
+        "urgency": 1,
+        "domain": "unknown"
+      }
+    ],
+    "summaries": [
+      "中平1年春二月，你在“临机应变”上落下一子，先把局势看清，再决定真正要押的是哪一边。"
+    ],
+    "loopWarnings": 0,
+    "romanceTargetId": "shen_zhiwei"
+  },
+  "scene": {
+    "title": "州郡震荡 · 临机应变",
+    "text": "中平1年春正月，你围绕“临机应变”先落下一子，冀州乡亭里的风向立刻变了。你这一回明着做的是“????”。中平元年春二月，你本想在流民与乡勇间虚晃一枪，借分发薄粥试探各方底线，谁知粥棚刚支起半边，就被几个流民里混着的青壮撞翻。滚烫的糜粥泼了一地，哭喊声骤起。\n\n你站在人群外围，攥紧袖中那卷早已写好的对策，指节发白。曲离歌在身后低声提醒：\"县吏的尘头已经看见，半个时辰内必到。\"\n\n流民首领盯着你，眼神阴沉。乡勇那边也起了骚动，有人朝你投来狐疑的目光——刚才那一下冲撞太巧，像是有人刻意为之。你原想看清局势再押注，如今却把自己摆在了明处。\n\n粮仓空了，人心也空了。县府的使吏还没到，你已嗅到一股寒意：有人在暗处比你更快一步。",
+    "summary": "中平1年春二月，你在“临机应变”上落下一子，先把局势看清，再决定真正要押的是哪一边。",
+    "imagePrompt": "黄巾余波，冀州乡亭，中平1年春二月，未定，汉末写意",
+    "imageUrl": "data:image/svg+xml;charset=utf-8,%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22960%22%20height%3D%22540%22%3E%20%20%20%20%20%20%3Cdefs%3E%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20x2%3D%221%22%20y1%3D%220%22%20y2%3D%221%22%3E%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%231f1712%22%20%2F%3E%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%234b2f23%22%20%2F%3E%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%20%20%20%20%20%20%3C%2Fdefs%3E%20%20%20%20%20%20%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22url(%23g)%22%20%2F%3E%20%20%20%20%20%20%3Ctext%20x%3D%2256%22%20y%3D%22116%22%20fill%3D%22%23f8e7c9%22%20font-size%3D%2234%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E%E9%BB%84%E5%B7%BE%E4%BD%99%E6%B3%A2%20%C2%B7%20%E5%B7%9E%E9%83%A1%E9%9C%87%E8%8D%A1%3C%2Ftext%3E%20%20%20%20%20%20%3Ctext%20x%3D%2256%22%20y%3D%22184%22%20fill%3D%22%23f3d6aa%22%20font-size%3D%2224%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E%E4%B8%AD%E5%B9%B31%E5%B9%B4%E6%98%A5%E4%BA%8C%E6%9C%88%3C%2Ftext%3E%20%20%20%20%20%20%3Ctext%20x%3D%2256%22%20y%3D%22244%22%20fill%3D%22%23fff7e6%22%20font-size%3D%2228%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E%E5%86%80%E5%B7%9E%E4%B9%A1%E4%BA%AD%3C%2Ftext%3E%20%20%20%20%20%20%3Ctext%20x%3D%2256%22%20y%3D%22312%22%20fill%3D%22%23e5ccb3%22%20font-size%3D%2220%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E%E5%85%88%E6%8A%8A%E5%B1%80%E5%8A%BF%E7%9C%8B%E6%B8%85%EF%BC%8C%E5%86%8D%E5%86%B3%E5%AE%9A%E7%9C%9F%E6%AD%A3%E8%A6%81%E6%8A%BC%E7%9A%84%E6%98%AF%E5%93%AA%E4%B8%80%E8%BE%B9%E3%80%82%3C%2Ftext%3E%20%20%20%20%3C%2Fsvg%3E%20%20",
+    "statusLine": "中平1年春二月 · 冀州乡亭 · 先把局势看清，再决定真正要押的是哪一边。",
+    "mode": "provider"
+  },
+  "choices": [
+    {
+      "id": "thread:domestic",
+      "text": "先应对“乡里粮仓将尽，流民与乡勇都盯着最后几车粟米”",
+      "hint": "把眼前最急的一件事压住，才能腾出手做别的。"
+    },
+    {
+      "id": "domestic",
+      "text": "经略内政",
+      "hint": "稳住粮秣、税赋与民心，让根基先不散。"
+    },
+    {
+      "id": "diplomacy",
+      "text": "纵横外交",
+      "hint": "先争一封回信、一句松口，很多路就会自己露出来。"
+    },
+    {
+      "id": "military",
+      "text": "整军练兵",
+      "hint": "人马若不齐心，再快的刀也会先砍到自己。"
+    },
+    {
+      "id": "conquest",
+      "text": "征伐攻取",
+      "hint": "征伐最见血色，也最容易一战改局。"
+    },
+    {
+      "id": "romance",
+      "text": "去见沈知微",
+      "hint": "乱世里最难的，是把真心留给还肯相信的人。"
+    }
+  ]
+}

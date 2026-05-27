@@ -1,0 +1,172 @@
+{
+  "sessionId": "tk_mo2knlwd_2fzthj",
+  "saveTime": "2026-04-17T07:13:32.333Z",
+  "settings": {
+    "apiBaseUrl": "",
+    "apiKey": "",
+    "model": "local-fallback"
+  },
+  "world": {
+    "scriptId": "red_cliffs",
+    "scriptName": "赤壁鏖战",
+    "scriptSummary": "荆楚风云激荡，水战、盟约与疫病交错成局。",
+    "stageIndex": 0,
+    "stageName": "联军磨合",
+    "turn": 0,
+    "year": 208,
+    "month": 1,
+    "season": "春",
+    "dateLabel": "208年春·1月",
+    "location": "江夏渡口",
+    "objective": "以“汉室宗亲”的身份站稳脚跟，先处理眼前最紧迫的麻烦。",
+    "weather": "阴",
+    "pressure": 0,
+    "lastTopic": "origin"
+  },
+  "gameState": {
+    "name": "无名小卒",
+    "gender": "女",
+    "age": 18,
+    "background": "汉室宗亲",
+    "identity": "寒门宗亲",
+    "faction": "自立",
+    "health": 100,
+    "maxHealth": 100,
+    "attack": 5,
+    "defense": 6,
+    "agility": 5,
+    "charm": 7,
+    "coins": 65,
+    "troops": 0,
+    "level": 1,
+    "renown": 0,
+    "skills": [
+      {
+        "name": "谨慎求生",
+        "description": "面对未知局势时，不至于轻易失去分寸。",
+        "icon": "fa-solid fa-shield-halved"
+      },
+      {
+        "name": "宗室礼法",
+        "description": "擅长分辨名分与礼制，交涉时更容易取得信任。",
+        "icon": "fa-solid fa-scroll"
+      }
+    ],
+    "items": [
+      {
+        "name": "旧族谱",
+        "count": 1
+      }
+    ],
+    "relationships": [
+      {
+        "name": "曲离歌",
+        "status": "未识",
+        "description": "江湖隐士。话少而锋利，像是早就看透天下风雨，却总留半句不说。"
+      }
+    ],
+    "achievements": [
+      {
+        "id": "first_choice",
+        "text": "初入乱世：做出第一次命运选择",
+        "unlocked": true
+      },
+      {
+        "id": "first_battle",
+        "text": "初经兵火：第一次真正置身战局",
+        "unlocked": false
+      },
+      {
+        "id": "first_victory",
+        "text": "首捷告成：赢下属于自己的第一场胜利",
+        "unlocked": false
+      },
+      {
+        "id": "rich_man",
+        "text": "积财有方：手中资财足以养一支小队",
+        "unlocked": false
+      },
+      {
+        "id": "high_reputation",
+        "text": "声名鹊起：地方上开始主动提起你的名字",
+        "unlocked": false
+      },
+      {
+        "id": "skill_master",
+        "text": "百艺渐成：掌握五种不同的生存或统御能力",
+        "unlocked": false
+      },
+      {
+        "id": "story_breaker",
+        "text": "破局之人：在僵局中主动打开新的局面",
+        "unlocked": false
+      }
+    ],
+    "adventureLog": [],
+    "turn": 0,
+    "currentScene": "origin"
+  },
+  "memory": {
+    "recentIntents": [],
+    "recentTopics": [],
+    "majorEvents": [],
+    "openThreads": [
+      {
+        "key": "ancestral_claim",
+        "title": "一卷残缺宗谱或许能证明你的来历",
+        "urgency": 1
+      },
+      {
+        "key": "fleet_prep",
+        "title": "水军尚未完全整编",
+        "urgency": 2
+      },
+      {
+        "key": "alliance_strain",
+        "title": "盟友之间互有猜疑",
+        "urgency": 1
+      }
+    ],
+    "summaries": [],
+    "loopWarnings": 0
+  },
+  "scene": {
+    "title": "命运落子",
+    "text": "你决定以“汉室宗亲”的身份踏入乱世。一卷残缺宗谱或许能证明你的来历很快摆在眼前，你知道，真正的第一步已经没有退路。",
+    "summary": "你选择以“汉室宗亲”的身份活在乱世。",
+    "imagePrompt": "赤壁鏖战，江夏渡口，风起，208年春·1月，汉末写意风",
+    "imageUrl": "data:image/svg+xml;charset=utf-8,%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22960%22%20height%3D%22540%22%3E%20%20%20%20%20%20%3Cdefs%3E%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20x2%3D%221%22%20y1%3D%220%22%20y2%3D%221%22%3E%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%231f2937%22%20%2F%3E%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%236b3f2a%22%20%2F%3E%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%20%20%20%20%20%20%3C%2Fdefs%3E%20%20%20%20%20%20%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22url(%23g)%22%20%2F%3E%20%20%20%20%20%20%3Ctext%20x%3D%2260%22%20y%3D%22120%22%20fill%3D%22%23f8e7c9%22%20font-size%3D%2234%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E%E8%B5%A4%E5%A3%81%E9%8F%96%E6%88%98%20%C2%B7%20%E8%81%94%E5%86%9B%E7%A3%A8%E5%90%88%3C%2Ftext%3E%20%20%20%20%20%20%3Ctext%20x%3D%2260%22%20y%3D%22190%22%20fill%3D%22%23f5d7a1%22%20font-size%3D%2224%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E208%E5%B9%B4%E6%98%A5%C2%B71%E6%9C%88%3C%2Ftext%3E%20%20%20%20%20%20%3Ctext%20x%3D%2260%22%20y%3D%22250%22%20fill%3D%22%23fff7e6%22%20font-size%3D%2228%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E%E6%B1%9F%E5%A4%8F%E6%B8%A1%E5%8F%A3%3C%2Ftext%3E%20%20%20%20%20%20%3Ctext%20x%3D%2260%22%20y%3D%22320%22%20fill%3D%22%23e5ccb3%22%20font-size%3D%2220%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E%E4%BB%A5%E2%80%9C%E6%B1%89%E5%AE%A4%E5%AE%97%E4%BA%B2%E2%80%9D%E7%9A%84%E8%BA%AB%E4%BB%BD%E7%AB%99%E7%A8%B3%E8%84%9A%E8%B7%9F%EF%BC%8C%E5%85%88%E5%A4%84%E7%90%86%E7%9C%BC%E5%89%8D%E6%9C%80%E7%B4%A7%E8%BF%AB%E7%9A%84%E9%BA%BB%E7%83%A6%E3%80%82%3C%2Ftext%3E%20%20%20%20%3C%2Fsvg%3E%20%20",
+    "statusLine": "208年春·1月 · 江夏渡口 · 以“汉室宗亲”的身份站稳脚跟，先处理眼前最紧迫的麻烦。",
+    "mode": "fallback"
+  },
+  "choices": [
+    {
+      "id": "thread_ancestral_claim",
+      "text": "围绕“一卷残缺宗谱或许能证明你的来历”继续推进",
+      "intent": "unknown",
+      "risk": "中",
+      "hint": "把当前最紧迫的线索彻底做出结果。"
+    },
+    {
+      "id": "unknown_investigate",
+      "text": "先摸清局势，再决定下一步",
+      "intent": "investigate",
+      "risk": "低",
+      "hint": "避免继续盲动。"
+    },
+    {
+      "id": "unknown_social",
+      "text": "去结识一个能带来新消息的人",
+      "intent": "socialize",
+      "risk": "中",
+      "hint": "从别人嘴里打开局面。"
+    },
+    {
+      "id": "unknown_travel",
+      "text": "离开原地，换一处地方碰碰运气",
+      "intent": "travel",
+      "risk": "中",
+      "hint": "新地点意味着新机会。"
+    }
+  ]
+}

@@ -1,0 +1,416 @@
+{
+  "sessionId": "tk_mo2ykxt1_iqz5p8",
+  "saveTime": "2026-04-17T13:44:17.543Z",
+  "settings": {
+    "apiBaseUrl": "",
+    "apiKey": "",
+    "model": "local-fallback"
+  },
+  "world": {
+    "scriptId": "guandu",
+    "scriptName": "官渡之前",
+    "scriptSummary": "北方局势悬于一线，粮秣、谋士与人心都会改写大战的走向。",
+    "stageIndex": 0,
+    "stageName": "蓄粮筹兵",
+    "turn": 2,
+    "year": 200,
+    "month": 3,
+    "season": "春",
+    "dateLabel": "建安5年春三月",
+    "location": "许都近郊",
+    "objective": "官渡之前，先决定成败的不是刀，而是粮。",
+    "weather": "霜重",
+    "pressure": 2,
+    "lastTopic": "unknown",
+    "mainline": {
+      "acts": [
+        {
+          "id": "supply",
+          "title": "先稳后方",
+          "summary": "官渡之前，先决定成败的不是刀，而是粮。",
+          "crisis": "前线缺粮，后方每一次误判都可能让大局崩塌。",
+          "focus": [
+            "domestic",
+            "trade",
+            "investigate"
+          ]
+        },
+        {
+          "id": "shadow",
+          "title": "暗线互咬",
+          "summary": "细作、军议、谣言绞在一起，你得先看清谁在下手。",
+          "crisis": "真消息和假风声混在一起，判断错一次就足够致命。",
+          "focus": [
+            "intrigue",
+            "investigate",
+            "diplomacy"
+          ]
+        },
+        {
+          "id": "decide",
+          "title": "战局定手",
+          "summary": "真正的胜负手已经不远，你得为那一击积够势能。",
+          "crisis": "若不能在关键时点抢先一步，所有筹划都会被反噬。",
+          "focus": [
+            "military",
+            "conquest",
+            "guidance"
+          ]
+        }
+      ],
+      "currentActIndex": 0,
+      "title": "先稳后方",
+      "summary": "官渡之前，先决定成败的不是刀，而是粮。",
+      "crisis": "前线缺粮，后方每一次误判都可能让大局崩塌。",
+      "progress": 0,
+      "focus": [
+        "domestic",
+        "trade",
+        "investigate"
+      ]
+    }
+  },
+  "gameState": {
+    "name": "无名小卒",
+    "gender": "男",
+    "age": 18.16,
+    "background": "地方豪右",
+    "identity": "乡亭豪强",
+    "faction": "自立",
+    "playerFactionId": "",
+    "health": 100,
+    "maxHealth": 100,
+    "attack": 5,
+    "defense": 5,
+    "agility": 5,
+    "charm": 5,
+    "coins": 80,
+    "troops": 18,
+    "renown": 0,
+    "domestic": 4,
+    "diplomacy": 4,
+    "military": 5,
+    "conquest": 3,
+    "romance": 0,
+    "morale": 58,
+    "fatigue": 8,
+    "supplies": 60,
+    "influence": 8,
+    "statusTags": [
+      "地方豪右",
+      "乡亭豪强"
+    ],
+    "lastResolutionSummary": "这一步“临机应变”没有落稳，反而让暗处多了一层压力。这回属于“常态发挥”。",
+    "lastBattleReport": null,
+    "factions": [
+      {
+        "id": "cao_camp",
+        "name": "许都曹营",
+        "role": "中枢军政",
+        "summary": "军令严密，最看重效率和忠诚。",
+        "stance": "中立",
+        "favor": 5,
+        "hostility": 18,
+        "leverage": 14,
+        "power": 76,
+        "tags": [
+          "中枢",
+          "军政"
+        ]
+      },
+      {
+        "id": "yuan_camp",
+        "name": "河北袁营",
+        "role": "北地强军",
+        "summary": "兵多势众，却也更容易生出轻慢。",
+        "stance": "戒备",
+        "favor": -12,
+        "hostility": 60,
+        "leverage": 8,
+        "power": 78,
+        "tags": [
+          "强军",
+          "河北"
+        ]
+      },
+      {
+        "id": "capital_clerks",
+        "name": "许都吏曹",
+        "role": "文书与内政",
+        "summary": "章表、军需、调度都要经他们的手。",
+        "stance": "中立",
+        "favor": 8,
+        "hostility": 12,
+        "leverage": 12,
+        "power": 50,
+        "tags": [
+          "文书",
+          "调度"
+        ]
+      },
+      {
+        "id": "grain_merchants",
+        "name": "粮道行会",
+        "role": "粮秣商路",
+        "summary": "战局越紧，他们手里的票码越重。",
+        "stance": "中立",
+        "favor": 4,
+        "hostility": 10,
+        "leverage": 16,
+        "power": 55,
+        "tags": [
+          "军需",
+          "商道"
+        ]
+      }
+    ],
+    "skills": [
+      {
+        "name": "乱世自保",
+        "description": "局势不明时，知道先看风向再落子。",
+        "icon": "fa-solid fa-shield-halved"
+      },
+      {
+        "name": "乡勇号令",
+        "description": "熟悉地方势力和乡勇调度，知道人情怎样换成兵。",
+        "icon": "fa-solid fa-flag"
+      }
+    ],
+    "items": [
+      {
+        "name": "家传长刀",
+        "count": 1
+      }
+    ],
+    "relationships": [
+      {
+        "id": "qulige",
+        "name": "曲离歌",
+        "title": "江湖隐士",
+        "factionId": "grain_merchants",
+        "status": "初识未深",
+        "affection": 0,
+        "trust": 10,
+        "loyalty": 0,
+        "romanceable": false,
+        "description": "江湖隐士，寡言锋利，像是总能先一步听见风向里的祸福。"
+      },
+      {
+        "id": "shen_zhiwei",
+        "name": "沈知微",
+        "title": "郡府书吏",
+        "factionId": "cao_camp",
+        "status": "初识未深",
+        "affection": 0,
+        "trust": 0,
+        "loyalty": 0,
+        "romanceable": true,
+        "description": "郡府书吏，言辞温静，写得一手漂亮章表，眼里却常藏着戒心。"
+      },
+      {
+        "id": "huo_qinglan",
+        "name": "霍青岚",
+        "title": "营中偏将",
+        "factionId": "yuan_camp",
+        "status": "初识未深",
+        "affection": 0,
+        "trust": 0,
+        "loyalty": 0,
+        "romanceable": true,
+        "description": "营中偏将，行事利落，惯在军中压住杂声，少见柔色。"
+      },
+      {
+        "id": "lu_yunyao",
+        "name": "陆云瑶",
+        "title": "盐铁商会管事",
+        "factionId": "grain_merchants",
+        "status": "初识未深",
+        "affection": 0,
+        "trust": 0,
+        "loyalty": 0,
+        "romanceable": true,
+        "description": "盐铁商会管事，眼光很快，笑意从不白给，知道什么叫价码。"
+      }
+    ],
+    "achievements": [
+      {
+        "id": "first_choice",
+        "text": "初入乱世：定下出身与第一步去路",
+        "unlocked": true
+      },
+      {
+        "id": "domestic_name",
+        "text": "抚民有成：州县开始记住你的名字",
+        "unlocked": false
+      },
+      {
+        "id": "diplomatic_name",
+        "text": "纵横有术：你已经能让人重新坐回桌前",
+        "unlocked": false
+      },
+      {
+        "id": "war_banner",
+        "text": "军旗初振：你第一次真正压住军心",
+        "unlocked": false
+      },
+      {
+        "id": "first_victory",
+        "text": "锋刃见血：你赢下了一场像样的胜势",
+        "unlocked": false
+      },
+      {
+        "id": "romance_seed",
+        "text": "情意生根：有人开始在灯下等你回音",
+        "unlocked": false
+      },
+      {
+        "id": "faction_broker",
+        "text": "权衡诸方：至少一方势力开始认真把你当回事",
+        "unlocked": false
+      }
+    ],
+    "adventureLog": [
+      {
+        "turn": 1,
+        "dateLabel": "建安5年春二月",
+        "entry": "建安5年春二月，你在“临机应变”上落下一子。这一步“临机应变”没有落稳，反而让暗处多了一层压力。这回属于“常态发挥”。"
+      },
+      {
+        "turn": 2,
+        "dateLabel": "建安5年春三月",
+        "entry": "建安5年春三月，你在“临机应变”上落下一子。这一步“临机应变”没有落稳，反而让暗处多了一层压力。这回属于“常态发挥”。"
+      }
+    ],
+    "turn": 2
+  },
+  "memory": {
+    "recentIntents": [
+      {
+        "intent": "unknown",
+        "tier": "fail",
+        "total": 5,
+        "actionText": "??????",
+        "mode": ""
+      },
+      {
+        "intent": "unknown",
+        "tier": "fail",
+        "total": 5,
+        "actionText": "??????",
+        "mode": ""
+      }
+    ],
+    "recentTopics": [
+      "unknown",
+      "unknown"
+    ],
+    "majorEvents": [
+      "建安5年春二月，你在“临机应变”上落下一子。这一步“临机应变”没有落稳，反而让暗处多了一层压力。这回属于“常态发挥”。",
+      "建安5年春三月，你在“临机应变”上落下一子。这一步“临机应变”没有落稳，反而让暗处多了一层压力。这回属于“常态发挥”。"
+    ],
+    "openThreads": [
+      {
+        "key": "spy_hunt",
+        "title": "细作混入营中，先露破绽的人就会先死",
+        "urgency": 2,
+        "domain": "intrigue"
+      },
+      {
+        "key": "unknown_1",
+        "title": "新的裂缝在暗处继续张开。",
+        "urgency": 2,
+        "domain": "unknown"
+      },
+      {
+        "key": "unknown_2",
+        "title": "新的裂缝在暗处继续张开。",
+        "urgency": 2,
+        "domain": "unknown"
+      }
+    ],
+    "summaries": [
+      "建安5年春二月，你在“临机应变”上落下一子。这一步“临机应变”没有落稳，反而让暗处多了一层压力。这回属于“常态发挥”。",
+      "建安5年春三月，你在“临机应变”上落下一子。这一步“临机应变”没有落稳，反而让暗处多了一层压力。这回属于“常态发挥”。"
+    ],
+    "loopWarnings": 0,
+    "romanceTargetId": "shen_zhiwei",
+    "lastResolution": {
+      "type": "general",
+      "mode": "",
+      "roll": 7,
+      "variance": {
+        "delta": 0,
+        "label": "常态发挥"
+      },
+      "tier": "fail",
+      "total": 5,
+      "effects": {
+        "health": 0,
+        "attack": 0,
+        "defense": 0,
+        "agility": 0,
+        "charm": 0,
+        "coins": 0,
+        "troops": 0,
+        "renown": 0,
+        "domestic": 0,
+        "diplomacy": 0,
+        "military": 0,
+        "conquest": 0,
+        "romance": 0,
+        "morale": 0,
+        "fatigue": 0,
+        "supplies": 0,
+        "influence": 0
+      },
+      "targetFactionId": "",
+      "battle": null,
+      "casualties": 0,
+      "supplyCost": 0,
+      "summary": "这一步“临机应变”没有落稳，反而让暗处多了一层压力。这回属于“常态发挥”。",
+      "promptLine": "本地规则裁定：基础值=5，环境修正=0，波动=常态发挥，最终总值=5，结果=fail。"
+    },
+    "lastChoiceText": "??????"
+  },
+  "scene": {
+    "title": "先稳后方 · 临机应变",
+    "text": "建安5年春二月，主线已推进到“先稳后方”。你围绕“临机应变”先落下一子，许都近郊里的风向立刻变了。你这一回明着做的是“??????”。建安五年春三月，许都近郊的仓廪前，你以核查虚耗为由，试图安插亲信入吏曹账房。这本是一招看似稳妥的闲棋，谁知那账房老吏目光如炬，只翻了半页账簿，便当众指出你举荐之人名籍有伪，言辞虽轻，四周目光却陡然锋利起来。\n\n曹营中立，却非盲目。这一步踏空，非但没能摸清粮储虚实，反而让原本对你尚存善意的许都吏曹生出几分警惕，那老吏甚至意味深长地瞥了你一眼，似在审视你究竟是何路神仙。\n\n入夜，营中火光摇曳。曲离歌无声地靠拢过来，压低声音道：\"有人去而复返，在咱们营盘外转了两圈。\"你心中一沉——细作尚未肃清，自己反倒先露了破绽。暗处的裂缝正在悄然张开，而你不知道，此刻盯着你的眼睛，究竟有几双。",
+    "summary": "建安5年春三月，你在“临机应变”上落下一子。这一步“临机应变”没有落稳，反而让暗处多了一层压力。这回属于“常态发挥”。",
+    "imagePrompt": "官渡之前，先稳后方，建安5年春三月，许都近郊，未定，汉末写意",
+    "imageUrl": "data:image/svg+xml;charset=utf-8,%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22960%22%20height%3D%22540%22%3E%20%20%20%20%20%20%3Cdefs%3E%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20x2%3D%221%22%20y1%3D%220%22%20y2%3D%221%22%3E%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%231a1310%22%20%2F%3E%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%234c2b20%22%20%2F%3E%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%20%20%20%20%20%20%3C%2Fdefs%3E%20%20%20%20%20%20%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22url(%23bg)%22%20%2F%3E%20%20%20%20%20%20%3Ctext%20x%3D%2254%22%20y%3D%2296%22%20fill%3D%22%23f5dfc1%22%20font-size%3D%2230%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E%E5%AE%98%E6%B8%A1%E4%B9%8B%E5%89%8D%3C%2Ftext%3E%20%20%20%20%20%20%3Ctext%20x%3D%2254%22%20y%3D%22148%22%20fill%3D%22%23eebd83%22%20font-size%3D%2224%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E%E5%85%88%E7%A8%B3%E5%90%8E%E6%96%B9%3C%2Ftext%3E%20%20%20%20%20%20%3Ctext%20x%3D%2254%22%20y%3D%22214%22%20fill%3D%22%23f7f1e7%22%20font-size%3D%2226%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E%E5%BB%BA%E5%AE%895%E5%B9%B4%E6%98%A5%E4%B8%89%E6%9C%88%3C%2Ftext%3E%20%20%20%20%20%20%3Ctext%20x%3D%2254%22%20y%3D%22272%22%20fill%3D%22%23fff1de%22%20font-size%3D%2228%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E%E8%AE%B8%E9%83%BD%E8%BF%91%E9%83%8A%3C%2Ftext%3E%20%20%20%20%20%20%3Ctext%20x%3D%2254%22%20y%3D%22328%22%20fill%3D%22%23ddc2a1%22%20font-size%3D%2220%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E%E5%AE%98%E6%B8%A1%E4%B9%8B%E5%89%8D%EF%BC%8C%E5%85%88%E5%86%B3%E5%AE%9A%E6%88%90%E8%B4%A5%E7%9A%84%E4%B8%8D%E6%98%AF%E5%88%80%EF%BC%8C%E8%80%8C%E6%98%AF%E7%B2%AE%E3%80%82%3C%2Ftext%3E%20%20%20%20%20%20%3Ctext%20x%3D%2254%22%20y%3D%22378%22%20fill%3D%22%23cfae88%22%20font-size%3D%2218%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E%E7%89%B5%E5%8A%A8%E5%8A%BF%E5%8A%9B%EF%BC%9A%E6%B2%B3%E5%8C%97%E8%A2%81%E8%90%A5%3C%2Ftext%3E%20%20%20%20%3C%2Fsvg%3E%20%20",
+    "statusLine": "建安5年春三月 · 许都近郊 · 官渡之前，先决定成败的不是刀，而是粮。",
+    "mode": "provider"
+  },
+  "choices": [
+    {
+      "id": "thread:intrigue",
+      "text": "优先处理“细作混入营中，先露破绽的人就会先死”",
+      "hint": "先压住眼前最急的一处，后面的布局才有地方落。"
+    },
+    {
+      "id": "domestic",
+      "text": "经略内政",
+      "hint": "这是当前主线“先稳后方”最需要的一手。"
+    },
+    {
+      "id": "trade",
+      "text": "转运筹饷",
+      "hint": "这是当前主线“先稳后方”最需要的一手。"
+    },
+    {
+      "id": "investigate",
+      "text": "查探局势",
+      "hint": "这是当前主线“先稳后方”最需要的一手。"
+    },
+    {
+      "id": "diplomacy",
+      "text": "试探河北袁营",
+      "hint": "河北袁营眼下最值得盯住，或者争，或者压。"
+    },
+    {
+      "id": "military",
+      "text": "整军练兵",
+      "hint": "先把人和阵列压住，再谈更大的征伐。"
+    }
+  ]
+}

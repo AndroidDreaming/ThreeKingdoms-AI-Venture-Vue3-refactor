@@ -1,0 +1,44 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: three-kingdoms-app
+    init: true
+    restart: unless-stopped
+    env_file:
+      - ./deploy/docker/app.env
+    environment:
+      NODE_ENV: production
+      PORT: 8111
+    ports:
+      - "127.0.0.1:8111:8111"
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - tk_runtime:/app/server/runtime
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8111/api/config').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: three-kingdoms-nginx
+    init: true
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    depends_on:
+      app:
+        condition: service_healthy
+    ports:
+      - "80:80"
+    volumes:
+      - ./deploy/docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+
+volumes:
+  tk_runtime:
+    name: tk_runtime

@@ -1,0 +1,301 @@
+{
+  "sessionId": "tk_mo2y0c6u_gfvat7",
+  "saveTime": "2026-04-17T13:28:05.189Z",
+  "settings": {
+    "apiBaseUrl": "",
+    "apiKey": "",
+    "model": "local-fallback"
+  },
+  "world": {
+    "scriptId": "red_cliffs",
+    "scriptName": "赤壁前夜",
+    "scriptSummary": "水陆相持，盟约脆薄，风向、病气与火势都在改变这场决战。",
+    "stageIndex": 0,
+    "stageName": "联军磨合",
+    "turn": 1,
+    "year": 208,
+    "month": 2,
+    "season": "春",
+    "dateLabel": "建安13年春二月",
+    "location": "会客偏厅",
+    "objective": "先定下自己的出身，再找准第一块可以落脚的地方。",
+    "weather": "急风",
+    "pressure": 1,
+    "lastTopic": "diplomacy",
+    "mainline": {
+      "acts": [
+        {
+          "id": "coalition",
+          "title": "同舟未同心",
+          "summary": "联军看似并肩，实则各有顾虑，裂口随时会开。",
+          "crisis": "只要一封误信，一场同盟就会先从疑心里烧起来。",
+          "focus": [
+            "diplomacy",
+            "romance",
+            "intrigue"
+          ]
+        },
+        {
+          "id": "wind",
+          "title": "借风成局",
+          "summary": "风向、水军、病气、军心，缺任何一环都撑不起大战。",
+          "crisis": "你若算不准节奏，再好的谋划也只会提前暴露。",
+          "focus": [
+            "military",
+            "trade",
+            "investigate"
+          ]
+        },
+        {
+          "id": "inferno",
+          "title": "一战定势",
+          "summary": "火势将起，谁能在这一夜抓住那口气，谁就能改写天下。",
+          "crisis": "大战迫近，已经没有多少试错空间。",
+          "focus": [
+            "conquest",
+            "military",
+            "guidance"
+          ]
+        }
+      ],
+      "currentActIndex": 0,
+      "title": "同舟未同心",
+      "summary": "联军看似并肩，实则各有顾虑，裂口随时会开。",
+      "crisis": "只要一封误信，一场同盟就会先从疑心里烧起来。",
+      "progress": 0,
+      "focus": [
+        "diplomacy",
+        "romance",
+        "intrigue"
+      ]
+    }
+  },
+  "gameState": {
+    "name": "无名小卒",
+    "gender": "女",
+    "age": 17.08,
+    "background": "",
+    "identity": "布衣",
+    "faction": "未定",
+    "health": 100,
+    "maxHealth": 100,
+    "attack": 5,
+    "defense": 5,
+    "agility": 5,
+    "charm": 5,
+    "coins": 50,
+    "troops": 0,
+    "renown": 0,
+    "domestic": 4,
+    "diplomacy": 5,
+    "military": 4,
+    "conquest": 3,
+    "romance": 0,
+    "morale": 58,
+    "fatigue": 8,
+    "supplies": 45,
+    "statusTags": [
+      "无名",
+      "局外人"
+    ],
+    "skills": [
+      {
+        "name": "乱世自保",
+        "description": "局势不明时，知道先看风向再落子。",
+        "icon": "fa-solid fa-shield-halved"
+      }
+    ],
+    "items": [],
+    "relationships": [
+      {
+        "id": "qulige",
+        "name": "曲离歌",
+        "title": "江湖隐士",
+        "status": "初识未深",
+        "affection": 0,
+        "trust": 10,
+        "romanceable": false,
+        "description": "江湖隐士，寡言锋利，像是总能先一步听见风向里的祸福。"
+      },
+      {
+        "id": "shen_zhiwei",
+        "name": "沈知微",
+        "title": "郡府书吏",
+        "status": "仍在观望",
+        "affection": 0,
+        "trust": 2,
+        "romanceable": true,
+        "description": "她开始认真衡量，你究竟是会被风吹走的人，还是能立住的人。"
+      },
+      {
+        "id": "huo_qinglan",
+        "name": "霍青岚",
+        "title": "营中偏将",
+        "status": "初识未深",
+        "affection": 0,
+        "trust": 0,
+        "romanceable": true,
+        "description": "营中偏将，行事利落，惯在军中压住杂声，少见柔色。"
+      },
+      {
+        "id": "lu_yunyao",
+        "name": "陆云瑶",
+        "title": "盐铁商会管事",
+        "status": "初识未深",
+        "affection": 0,
+        "trust": 0,
+        "romanceable": true,
+        "description": "盐铁商会管事，眼光很快，笑意从不白给，知道什么叫价码。"
+      }
+    ],
+    "achievements": [
+      {
+        "id": "first_choice",
+        "text": "初入乱世：定下自己的出身与第一步去路",
+        "unlocked": false
+      },
+      {
+        "id": "domestic_name",
+        "text": "抚民有成：地方开始记住你的手段",
+        "unlocked": false
+      },
+      {
+        "id": "diplomatic_name",
+        "text": "纵横有术：你能让原本不肯点头的人重新坐下",
+        "unlocked": false
+      },
+      {
+        "id": "war_banner",
+        "text": "军旗初振：你的军令第一次压住了人心",
+        "unlocked": false
+      },
+      {
+        "id": "first_victory",
+        "text": "锋刃见血：你赢下了第一场像样的胜势",
+        "unlocked": false
+      },
+      {
+        "id": "romance_seed",
+        "text": "情意生根：有人开始在灯下等你一句回音",
+        "unlocked": false
+      }
+    ],
+    "adventureLog": [
+      {
+        "turn": 1,
+        "dateLabel": "建安13年春二月",
+        "entry": "建安13年春二月，你在“纵横外交”上落下一子。这一步“纵横外交”没有落稳，反而让暗处多了一层压力。这回属于“常态发挥”。主线现已推进到“同舟未同心”。"
+      }
+    ],
+    "turn": 1
+  },
+  "memory": {
+    "recentIntents": [
+      {
+        "intent": "diplomacy",
+        "tier": "fail",
+        "total": 6,
+        "actionText": "diplomacy"
+      }
+    ],
+    "recentTopics": [
+      "diplomacy"
+    ],
+    "majorEvents": [
+      "建安13年春二月，你在“纵横外交”上落下一子。这一步“纵横外交”没有落稳，反而让暗处多了一层压力。这回属于“常态发挥”。主线现已推进到“同舟未同心”。"
+    ],
+    "openThreads": [
+      {
+        "key": "diplomacy_1",
+        "title": "一封新回信已在路上，但谁先开价，谁就先露底。",
+        "urgency": 3,
+        "domain": "diplomacy"
+      },
+      {
+        "key": "fleet_drill",
+        "title": "水军操练未成，风向与火候都还差最后一层拿捏",
+        "urgency": 1,
+        "domain": "military"
+      }
+    ],
+    "summaries": [
+      "建安13年春二月，你在“纵横外交”上落下一子。这一步“纵横外交”没有落稳，反而让暗处多了一层压力。这回属于“常态发挥”。主线现已推进到“同舟未同心”。"
+    ],
+    "loopWarnings": 0,
+    "romanceTargetId": "shen_zhiwei",
+    "lastResolution": {
+      "type": "social",
+      "roll": 13,
+      "primary": 4,
+      "contextModifier": 2,
+      "variance": {
+        "delta": 0,
+        "label": "常态发挥"
+      },
+      "total": 6,
+      "tier": "fail",
+      "effects": {
+        "health": 0,
+        "attack": 0,
+        "defense": 0,
+        "agility": 0,
+        "charm": 0,
+        "coins": 0,
+        "troops": 0,
+        "renown": 0,
+        "domestic": 0,
+        "diplomacy": 1,
+        "military": 0,
+        "conquest": 0,
+        "romance": 0,
+        "morale": 0,
+        "fatigue": 0,
+        "supplies": 0
+      },
+      "summary": "这一步“纵横外交”没有落稳，反而让暗处多了一层压力。这回属于“常态发挥”。",
+      "promptLine": "行动“diplomacy”由本地规则先行裁定：类型=social，基础值=4，环境修正=2，波动=常态发挥，最终总值=6，结果=fail。"
+    },
+    "lastChoiceText": "diplomacy"
+  },
+  "scene": {
+    "title": "同舟未同心 · 纵横外交",
+    "text": "建安13年春正月，主线已推进到“同舟未同心”。你围绕“纵横外交”先落下一子，会客偏厅里的风向立刻变了。你这一回明着做的是“diplomacy”。建安十三年春二月，会客偏厅里的茶盏刚放下，你便试探着抛出那句关于\"互派质子、共守江津\"的提议。话音未落，沈知微的眉头已微微蹙起，指尖在案上轻叩两下，不再接话。\n\n曲离歌倒茶的手顿了顿，茶水溢出半分。她垂眼擦拭，不置可否。\n\n窗外传来操练水军的号角，沈知微起身整袖，只道：\"足下初来，许多事还不甚明了。\"他没说\"不\"，却比\"不\"更冷。你那句提议，分明触到了谁的隐痛——是谁在防谁？还是谁已另有谋划？\n\n你意识到自己这一子落得太急。身份未明，便想斡旋两方，反而让人觉得你游移不定。\n\n门外小吏快步进来，递上一封密函。沈知微接过后神色微变，目光扫过你，意味深长：\"曹营有人送了信来。\"\n\n他没说内容，但那一瞬的沉默，已让偏厅的空气更紧了一分。",
+    "summary": "建安13年春二月，你在“纵横外交”上落下一子。这一步“纵横外交”没有落稳，反而让暗处多了一层压力。这回属于“常态发挥”。主线现已推进到“同舟未同心”。",
+    "imagePrompt": "赤壁前夜，同舟未同心，建安13年春二月，会客偏厅，周旋，汉末写意",
+    "imageUrl": "data:image/svg+xml;charset=utf-8,%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22960%22%20height%3D%22540%22%3E%20%20%20%20%20%20%3Cdefs%3E%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20x2%3D%221%22%20y1%3D%220%22%20y2%3D%221%22%3E%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%231c1511%22%20%2F%3E%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23513123%22%20%2F%3E%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%20%20%20%20%20%20%3C%2Fdefs%3E%20%20%20%20%20%20%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22url(%23bg)%22%20%2F%3E%20%20%20%20%20%20%3Ctext%20x%3D%2254%22%20y%3D%22106%22%20fill%3D%22%23f8e4c5%22%20font-size%3D%2230%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E%E8%B5%A4%E5%A3%81%E5%89%8D%E5%A4%9C%3C%2Ftext%3E%20%20%20%20%20%20%3Ctext%20x%3D%2254%22%20y%3D%22156%22%20fill%3D%22%23efc391%22%20font-size%3D%2222%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E%E5%90%8C%E8%88%9F%E6%9C%AA%E5%90%8C%E5%BF%83%3C%2Ftext%3E%20%20%20%20%20%20%3Ctext%20x%3D%2254%22%20y%3D%22218%22%20fill%3D%22%23f7f1e7%22%20font-size%3D%2226%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E%E5%BB%BA%E5%AE%8913%E5%B9%B4%E6%98%A5%E4%BA%8C%E6%9C%88%3C%2Ftext%3E%20%20%20%20%20%20%3Ctext%20x%3D%2254%22%20y%3D%22274%22%20fill%3D%22%23fff3dd%22%20font-size%3D%2228%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E%E4%BC%9A%E5%AE%A2%E5%81%8F%E5%8E%85%3C%2Ftext%3E%20%20%20%20%20%20%3Ctext%20x%3D%2254%22%20y%3D%22334%22%20fill%3D%22%23ddc2a1%22%20font-size%3D%2220%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E%E5%85%88%E5%AE%9A%E4%B8%8B%E8%87%AA%E5%B7%B1%E7%9A%84%E5%87%BA%E8%BA%AB%EF%BC%8C%E5%86%8D%E6%89%BE%E5%87%86%E7%AC%AC%E4%B8%80%E5%9D%97%E5%8F%AF%E4%BB%A5%E8%90%BD%E8%84%9A%E7%9A%84%E5%9C%B0%E6%96%B9%E3%80%82%3C%2Ftext%3E%20%20%20%20%3C%2Fsvg%3E%20%20",
+    "statusLine": "建安13年春二月 · 会客偏厅 · 先定下自己的出身，再找准第一块可以落脚的地方。",
+    "mode": "provider"
+  },
+  "choices": [
+    {
+      "id": "thread:diplomacy",
+      "text": "优先处理“一封新回信已在路上，但谁先开价，谁就先露底。”",
+      "hint": "先压住眼前最急的一处，后面的布局才有地方落。"
+    },
+    {
+      "id": "diplomacy",
+      "text": "纵横外交",
+      "hint": "这是当前主线“同舟未同心”最需要的一手。"
+    },
+    {
+      "id": "romance",
+      "text": "经营情意",
+      "hint": "这是当前主线“同舟未同心”最需要的一手。"
+    },
+    {
+      "id": "intrigue",
+      "text": "暗线谋局",
+      "hint": "这是当前主线“同舟未同心”最需要的一手。"
+    },
+    {
+      "id": "domestic",
+      "text": "经略内政",
+      "hint": "稳住粮秣、税赋与民心，让根基先不散。"
+    },
+    {
+      "id": "military",
+      "text": "整军练兵",
+      "hint": "人马不齐心，再快的刀也会先砍到自己。"
+    }
+  ]
+}

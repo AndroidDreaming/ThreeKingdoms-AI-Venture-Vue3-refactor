@@ -1,0 +1,443 @@
+{
+  "sessionId": "tk_mo2yrayt_ezlk0g",
+  "saveTime": "2026-04-17T13:49:31.809Z",
+  "settings": {
+    "apiBaseUrl": "",
+    "apiKey": "",
+    "model": "local-fallback"
+  },
+  "world": {
+    "scriptId": "yellow_turban",
+    "scriptName": "黄巾余波",
+    "scriptSummary": "黄巾余焰未灭，郡县失序，豪强、流民与寒门都在抢一块能立足的地方。",
+    "stageIndex": 0,
+    "stageName": "州郡震荡",
+    "turn": 2,
+    "year": 184,
+    "month": 4,
+    "season": "夏",
+    "dateLabel": "中平1年夏四月",
+    "location": "前线旷野",
+    "objective": "黄巾余波未散，你得先在州县震荡里保住一块落脚地。",
+    "weather": "暑热",
+    "pressure": 2,
+    "lastTopic": "conquest",
+    "mainline": {
+      "acts": [
+        {
+          "id": "roots",
+          "title": "先活下来",
+          "summary": "黄巾余波未散，你得先在州县震荡里保住一块落脚地。",
+          "crisis": "乡里缺粮，郡县权力正在松动。",
+          "focus": [
+            "domestic",
+            "travel",
+            "trade"
+          ]
+        },
+        {
+          "id": "alignment",
+          "title": "选边与借势",
+          "summary": "郡府、豪强、流民武装都在招手，你不能一直站在门外。",
+          "crisis": "迟迟不下注的人，往往先被各方一并吃掉。",
+          "focus": [
+            "diplomacy",
+            "military",
+            "intrigue"
+          ]
+        },
+        {
+          "id": "breakout",
+          "title": "打出名号",
+          "summary": "你需要一场真正会被旁人记住的行动。",
+          "crisis": "若不能立名，你永远只是别人布局里的脚注。",
+          "focus": [
+            "conquest",
+            "military",
+            "diplomacy"
+          ]
+        }
+      ],
+      "currentActIndex": 0,
+      "title": "先活下来",
+      "summary": "黄巾余波未散，你得先在州县震荡里保住一块落脚地。",
+      "crisis": "乡里缺粮，郡县权力正在松动。",
+      "progress": 0,
+      "focus": [
+        "domestic",
+        "travel",
+        "trade"
+      ]
+    }
+  },
+  "gameState": {
+    "name": "无名小卒",
+    "gender": "女",
+    "age": 20.25,
+    "background": "地方豪右",
+    "identity": "乡亭豪强",
+    "faction": "自立",
+    "playerFactionId": "",
+    "health": 86,
+    "maxHealth": 100,
+    "attack": 5,
+    "defense": 5,
+    "agility": 5,
+    "charm": 5,
+    "coins": 80,
+    "troops": 0,
+    "renown": 0,
+    "domestic": 4,
+    "diplomacy": 5,
+    "military": 5,
+    "conquest": 3,
+    "romance": 0,
+    "morale": 44,
+    "fatigue": 26,
+    "supplies": 48,
+    "influence": 6,
+    "statusTags": [
+      "地方豪右",
+      "乡亭豪强"
+    ],
+    "lastResolutionSummary": "野战失了先手，对手是“黄巾余部”趁势把局面又压低了一层。这回属于“把住了节奏”。",
+    "lastBattleReport": {
+      "mode": "field",
+      "tier": "fail",
+      "playerStrength": 8,
+      "enemyStrength": 15,
+      "casualties": 20,
+      "supplyCost": 12,
+      "targetFactionId": "turban_remnant"
+    },
+    "factions": [
+      {
+        "id": "county_office",
+        "name": "郡县官府",
+        "role": "地方政务",
+        "summary": "守法统、保赋税，但并不总能护住百姓。",
+        "stance": "中立",
+        "favor": 2,
+        "hostility": 18,
+        "leverage": 8,
+        "power": 58,
+        "tags": [
+          "政务",
+          "法统"
+        ]
+      },
+      {
+        "id": "local_gentry",
+        "name": "乡亭豪右",
+        "role": "地方豪强",
+        "summary": "手里有人有粮，也最看重谁能替他们守住利益。",
+        "stance": "中立",
+        "favor": 0,
+        "hostility": 24,
+        "leverage": 10,
+        "power": 64,
+        "tags": [
+          "乡勇",
+          "田地"
+        ]
+      },
+      {
+        "id": "turban_remnant",
+        "name": "黄巾余部",
+        "role": "流动作战",
+        "summary": "散而未灭，最懂得怎样在乱局里把裂缝撕大。",
+        "stance": "敌视",
+        "favor": -17,
+        "hostility": 68,
+        "leverage": 5,
+        "power": 52,
+        "tags": [
+          "流兵",
+          "鼓噪"
+        ]
+      },
+      {
+        "id": "refugee_bands",
+        "name": "流民团",
+        "role": "民间武装",
+        "summary": "想活下来的人聚在一起，谁能给粮，谁就能带他们走。",
+        "stance": "中立",
+        "favor": 6,
+        "hostility": 16,
+        "leverage": 6,
+        "power": 40,
+        "tags": [
+          "流民",
+          "求生"
+        ]
+      },
+      {
+        "id": "salt_merchants",
+        "name": "行商会",
+        "role": "商路与钱粮",
+        "summary": "谁能保住商路，他们就愿意押注谁。",
+        "stance": "中立",
+        "favor": 0,
+        "hostility": 16,
+        "leverage": 14,
+        "power": 48,
+        "tags": [
+          "商路",
+          "钱粮"
+        ]
+      }
+    ],
+    "skills": [
+      {
+        "name": "乱世自保",
+        "description": "局势不明时，知道先看风向再落子。",
+        "icon": "fa-solid fa-shield-halved"
+      },
+      {
+        "name": "乡勇号令",
+        "description": "熟悉地方势力和乡勇调度，知道人情怎样换成兵。",
+        "icon": "fa-solid fa-flag"
+      }
+    ],
+    "items": [
+      {
+        "name": "家传长刀",
+        "count": 1
+      }
+    ],
+    "relationships": [
+      {
+        "id": "qulige",
+        "name": "曲离歌",
+        "title": "江湖隐士",
+        "factionId": "refugee_bands",
+        "status": "初识未深",
+        "affection": 0,
+        "trust": 10,
+        "loyalty": 0,
+        "romanceable": false,
+        "description": "江湖隐士，寡言锋利，像是总能先一步听见风向里的祸福。"
+      },
+      {
+        "id": "shen_zhiwei",
+        "name": "沈知微",
+        "title": "郡府书吏",
+        "factionId": "county_office",
+        "status": "重新收紧了话口",
+        "affection": 0,
+        "trust": 2,
+        "loyalty": 0,
+        "romanceable": true,
+        "description": "她会先记住一个人说话时露不露怯，再决定要不要替这个人开门。"
+      },
+      {
+        "id": "huo_qinglan",
+        "name": "霍青岚",
+        "title": "营中偏将",
+        "factionId": "local_gentry",
+        "status": "初识未深",
+        "affection": 0,
+        "trust": 0,
+        "loyalty": 0,
+        "romanceable": true,
+        "description": "营中偏将，行事利落，惯在军中压住杂声，少见柔色。"
+      },
+      {
+        "id": "lu_yunyao",
+        "name": "陆云瑶",
+        "title": "盐铁商会管事",
+        "factionId": "salt_merchants",
+        "status": "初识未深",
+        "affection": 0,
+        "trust": 0,
+        "loyalty": 0,
+        "romanceable": true,
+        "description": "盐铁商会管事，眼光很快，笑意从不白给，知道什么叫价码。"
+      }
+    ],
+    "achievements": [
+      {
+        "id": "first_choice",
+        "text": "初入乱世：定下出身与第一步去路",
+        "unlocked": true
+      },
+      {
+        "id": "domestic_name",
+        "text": "抚民有成：州县开始记住你的名字",
+        "unlocked": false
+      },
+      {
+        "id": "diplomatic_name",
+        "text": "纵横有术：你已经能让人重新坐回桌前",
+        "unlocked": false
+      },
+      {
+        "id": "war_banner",
+        "text": "军旗初振：你第一次真正压住军心",
+        "unlocked": false
+      },
+      {
+        "id": "first_victory",
+        "text": "锋刃见血：你赢下了一场像样的胜势",
+        "unlocked": false
+      },
+      {
+        "id": "romance_seed",
+        "text": "情意生根：有人开始在灯下等你回音",
+        "unlocked": false
+      },
+      {
+        "id": "faction_broker",
+        "text": "权衡诸方：至少一方势力开始认真把你当回事",
+        "unlocked": false
+      }
+    ],
+    "adventureLog": [
+      {
+        "turn": 1,
+        "dateLabel": "中平1年春二月",
+        "entry": "中平1年春二月，你在“纵横外交”上落下一子。这一步“纵横外交”没有落稳，反而让暗处多了一层压力。这回属于“节奏迟滞”。被牵动的是“行商会”。"
+      },
+      {
+        "turn": 2,
+        "dateLabel": "中平1年夏四月",
+        "entry": "中平1年夏四月，你在“征伐攻取”上落下一子【field】。野战失了先手，对手是“黄巾余部”趁势把局面又压低了一层。这回属于“把住了节奏”。被牵动的是“黄巾余部”。"
+      }
+    ],
+    "turn": 2
+  },
+  "memory": {
+    "recentIntents": [
+      {
+        "intent": "diplomacy",
+        "tier": "fail",
+        "total": 3,
+        "actionText": "diplomacy",
+        "mode": ""
+      },
+      {
+        "intent": "conquest",
+        "tier": "fail",
+        "total": -6,
+        "actionText": "conquest",
+        "mode": "field"
+      }
+    ],
+    "recentTopics": [
+      "diplomacy",
+      "conquest"
+    ],
+    "majorEvents": [
+      "中平1年春二月，你在“纵横外交”上落下一子。这一步“纵横外交”没有落稳，反而让暗处多了一层压力。这回属于“节奏迟滞”。被牵动的是“行商会”。",
+      "中平1年夏四月，你在“征伐攻取”上落下一子【field】。野战失了先手，对手是“黄巾余部”趁势把局面又压低了一层。这回属于“把住了节奏”。被牵动的是“黄巾余部”。"
+    ],
+    "openThreads": [
+      {
+        "key": "conquest_2",
+        "title": "黄巾余部留下的裂口还没彻底站稳，这一口气不能乱用。",
+        "urgency": 3,
+        "domain": "conquest"
+      },
+      {
+        "key": "grain_shortage",
+        "title": "乡里粮仓将尽，流民与乡勇都盯着最后几车粟米",
+        "urgency": 2,
+        "domain": "domestic"
+      },
+      {
+        "key": "county_envoy",
+        "title": "县府使吏将至，也许带来招徕，也可能带来盘剥",
+        "urgency": 1,
+        "domain": "diplomacy"
+      }
+    ],
+    "summaries": [
+      "中平1年春二月，你在“纵横外交”上落下一子。这一步“纵横外交”没有落稳，反而让暗处多了一层压力。这回属于“节奏迟滞”。被牵动的是“行商会”。",
+      "中平1年夏四月，你在“征伐攻取”上落下一子【field】。野战失了先手，对手是“黄巾余部”趁势把局面又压低了一层。这回属于“把住了节奏”。被牵动的是“黄巾余部”。"
+    ],
+    "loopWarnings": 0,
+    "romanceTargetId": "shen_zhiwei",
+    "lastResolution": {
+      "type": "war",
+      "mode": "field",
+      "roll": 17,
+      "variance": {
+        "delta": 1,
+        "label": "把住了节奏"
+      },
+      "tier": "fail",
+      "total": -6,
+      "effects": {
+        "health": -14,
+        "attack": 0,
+        "defense": 0,
+        "agility": 0,
+        "charm": 0,
+        "coins": 0,
+        "troops": -20,
+        "renown": -2,
+        "domestic": 0,
+        "diplomacy": 0,
+        "military": 0,
+        "conquest": 0,
+        "romance": 0,
+        "morale": -14,
+        "fatigue": 18,
+        "supplies": -12,
+        "influence": -2
+      },
+      "targetFactionId": "turban_remnant",
+      "battle": {
+        "playerStrength": 8,
+        "enemyStrength": 15,
+        "mode": "field"
+      },
+      "casualties": 20,
+      "supplyCost": 12,
+      "summary": "野战失了先手，对手是“黄巾余部”趁势把局面又压低了一层。这回属于“把住了节奏”。",
+      "promptLine": "本地军略裁定：模式=field，我方战力=8，敌方战力=15，波动=把住了节奏，最终压差=-6，结果=fail，折损兵力=20，消耗军需=12。"
+    },
+    "lastChoiceText": "conquest"
+  },
+  "scene": {
+    "title": "先活下来 · 征伐攻取",
+    "text": "中平1年春二月，主线已推进到“先活下来”。你围绕“征伐攻取”先落下一子，前线旷野里的风向立刻变了。被你真正牵动的是“黄巾余部”。你这一回明着做的是“conquest”。中平元年夏四月，旷野风燥，旗角猎猎。你率乡勇追击黄巾残部，本欲一鼓作气斩草除根，却在野地里撞上了硬茬。敌众我寡，对方战力远超预期，你勉强稳住阵脚，但二十名乡勇倒在了荒草间，十二车军需付之一炬。\n\n黄巾余部非但未被剿灭，反而在撤退中露出了狞笑。他们不是乌合之众，而是有组织的残兵，对这片土地比你更熟。你望着他们消失的方向，心下沉沉——这一仗没能打出威风，反倒让他们看清了你的虚实。\n\n曲离歌默默收拢残卒，沈知微从后方赶来，眼神复杂。士气低落，疲惫蔓延，更棘手的是粮仓将尽的消息已在流民中传开。你望向郡县方向，尘土飞扬，县府使吏将至。是招徕，还是盘剥？此时你手中筹码已薄，而黄巾余部的威胁，正像旷野上的野火，越烧越旺。",
+    "summary": "中平1年夏四月，你在“征伐攻取”上落下一子【field】。野战失了先手，对手是“黄巾余部”趁势把局面又压低了一层。这回属于“把住了节奏”。被牵动的是“黄巾余部”。",
+    "imagePrompt": "黄巾余波，先活下来，中平1年夏四月，前线旷野，鏖战，汉末写意",
+    "imageUrl": "data:image/svg+xml;charset=utf-8,%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22960%22%20height%3D%22540%22%3E%20%20%20%20%20%20%3Cdefs%3E%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20x2%3D%221%22%20y1%3D%220%22%20y2%3D%221%22%3E%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%231a1310%22%20%2F%3E%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%234c2b20%22%20%2F%3E%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%20%20%20%20%20%20%3C%2Fdefs%3E%20%20%20%20%20%20%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22url(%23bg)%22%20%2F%3E%20%20%20%20%20%20%3Ctext%20x%3D%2254%22%20y%3D%2296%22%20fill%3D%22%23f5dfc1%22%20font-size%3D%2230%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E%E9%BB%84%E5%B7%BE%E4%BD%99%E6%B3%A2%3C%2Ftext%3E%20%20%20%20%20%20%3Ctext%20x%3D%2254%22%20y%3D%22148%22%20fill%3D%22%23eebd83%22%20font-size%3D%2224%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E%E5%85%88%E6%B4%BB%E4%B8%8B%E6%9D%A5%3C%2Ftext%3E%20%20%20%20%20%20%3Ctext%20x%3D%2254%22%20y%3D%22214%22%20fill%3D%22%23f7f1e7%22%20font-size%3D%2226%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E%E4%B8%AD%E5%B9%B31%E5%B9%B4%E5%A4%8F%E5%9B%9B%E6%9C%88%3C%2Ftext%3E%20%20%20%20%20%20%3Ctext%20x%3D%2254%22%20y%3D%22272%22%20fill%3D%22%23fff1de%22%20font-size%3D%2228%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E%E5%89%8D%E7%BA%BF%E6%97%B7%E9%87%8E%3C%2Ftext%3E%20%20%20%20%20%20%3Ctext%20x%3D%2254%22%20y%3D%22328%22%20fill%3D%22%23ddc2a1%22%20font-size%3D%2220%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E%E9%BB%84%E5%B7%BE%E4%BD%99%E6%B3%A2%E6%9C%AA%E6%95%A3%EF%BC%8C%E4%BD%A0%E5%BE%97%E5%85%88%E5%9C%A8%E5%B7%9E%E5%8E%BF%E9%9C%87%E8%8D%A1%E9%87%8C%E4%BF%9D%E4%BD%8F%E4%B8%80%E5%9D%97%E8%90%BD%E8%84%9A%E5%9C%B0%E3%80%82%3C%2Ftext%3E%20%20%20%20%20%20%3Ctext%20x%3D%2254%22%20y%3D%22378%22%20fill%3D%22%23cfae88%22%20font-size%3D%2218%22%20font-family%3D%22Microsoft%20YaHei%2C%20sans-serif%22%3E%E7%89%B5%E5%8A%A8%E5%8A%BF%E5%8A%9B%EF%BC%9A%E9%BB%84%E5%B7%BE%E4%BD%99%E9%83%A8%3C%2Ftext%3E%20%20%20%20%3C%2Fsvg%3E%20%20",
+    "statusLine": "中平1年夏四月 · 前线旷野 · 黄巾余波未散，你得先在州县震荡里保住一块落脚地。",
+    "mode": "provider"
+  },
+  "choices": [
+    {
+      "id": "thread:conquest",
+      "text": "优先处理“黄巾余部留下的裂口还没彻底站稳，这一口气不能乱用。”",
+      "hint": "先压住眼前最急的一处，后面的布局才有地方落。"
+    },
+    {
+      "id": "domestic",
+      "text": "经略内政",
+      "hint": "这是当前主线“先活下来”最需要的一手。"
+    },
+    {
+      "id": "travel",
+      "text": "迁转行路",
+      "hint": "这是当前主线“先活下来”最需要的一手。"
+    },
+    {
+      "id": "trade",
+      "text": "转运筹饷",
+      "hint": "这是当前主线“先活下来”最需要的一手。"
+    },
+    {
+      "id": "diplomacy",
+      "text": "试探黄巾余部",
+      "hint": "黄巾余部眼下最值得盯住，或者争，或者压。"
+    },
+    {
+      "id": "military",
+      "text": "整军练兵",
+      "hint": "先把人和阵列压住，再谈更大的征伐。"
+    }
+  ]
+}
