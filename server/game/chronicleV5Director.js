@@ -1,5 +1,4 @@
 ﻿const { DEFAULT_MODEL } = require('./chronicleV2Constants');
-const { buildLocalDynamicChoices, generateDynamicChoices } = require('./chronicleV5ChoiceGenerator');
 const { applyDramaticMeta } = require('./chronicleV5DramaticLayer');
 const { ensureMemoryState, normalizeThreadEntry } = require('./chronicleV5Memory');
 const { NARRATION_CONFIG } = require('./chronicleV5NarrationConfigSafe');
@@ -7,7 +6,7 @@ const { streamUnifiedDirectorTurn } = require('./chronicleV5UnifiedTurnStream');
 
 const LABEL_DOMAIN = '\u5c40\u52bf';
 const LABEL_ACTION = '\u52a8\u4f5c';
-const STATUS_LOCAL_NARRATION = '\u6b63\u6587\u5148\u7531\u672c\u5730\u63a5\u4f4f\uff0c\u540e\u7eed\u52a8\u4f5c\u6b63\u5728\u91cd\u6392\u3002';
+const STATUS_LOCAL_NARRATION = '\u6b63\u6587\u5148\u7531\u672c\u5730\u63a5\u4f4f\uff0c\u672c\u56de\u4e0d\u5c55\u793a\u52a8\u6001\u9009\u9879\u3002';
 const STATUS_PROVIDER_STREAM = '\u672c\u5730\u5bfc\u6f14\u5df2\u88c1\u5b9a\u6b64\u56de\uff0c\u7075\u5883\u6b63\u5728\u6d41\u5f0f\u6f14\u7ece\u6b63\u6587\u3002';
 const STATUS_PROVIDER_CHOICES = '\u6b63\u6587\u5df2\u843d\u4e0b\uff0c\u6b63\u5728\u6574\u7406\u540e\u7eed\u52a8\u4f5c\u3002';
 
@@ -40,8 +39,8 @@ function isProviderEnabled(settings) {
 
 function buildDynamicChoiceMeta(mode, reason, detail) {
   return {
-    mode: String(mode || 'fallback').trim() || 'fallback',
-    reason: String(reason || 'local_dynamic_fallback').trim() || 'local_dynamic_fallback',
+    mode: String(mode || 'disabled').trim() || 'disabled',
+    reason: String(reason || 'dynamic_skipped').trim() || 'dynamic_skipped',
     detail: String(detail || '').trim()
   };
 }
@@ -209,14 +208,9 @@ async function streamLocalFallbackText(text, onText) {
 
 async function buildFallbackTurn(options, bundleDetail = '') {
   const {
-    session,
-    action,
-    runtimeSettings,
     turnResult,
     onStatus,
     onText,
-    onDraft,
-    onChoice,
     providerDiagnostics = null
   } = options;
 
@@ -229,31 +223,8 @@ async function buildFallbackTurn(options, bundleDetail = '') {
 
   let dynamicChoices = [];
   let dynamicChoiceMeta = buildDynamicChoiceMeta('disabled', 'dynamic_skipped', bundleDetail || 'director-bypass');
-  if (session && session.world && session.world.phase === 'playing' && session.world.phase !== 'ended') {
-    if (typeof onStatus === 'function') {
-      await onStatus(
-        narration && narration.mode === 'fallback'
-          ? STATUS_LOCAL_NARRATION
-          : NARRATION_CONFIG.status.choicesReady
-      );
-    }
-    const generated = await generateDynamicChoices(session, action, runtimeSettings, {
-      onDraft,
-      onChoice,
-      allowLocalFallback: false
-    });
-    dynamicChoices = ensureList(generated).slice(0, 3);
-    dynamicChoiceMeta = buildDynamicChoiceMeta(
-      generated && generated.meta && generated.meta.mode
-        ? generated.meta.mode
-        : (narration && narration.mode === 'fallback' ? 'fallback' : 'disabled'),
-      generated && generated.meta && generated.meta.reason
-        ? generated.meta.reason
-        : 'dynamic_choices_unavailable',
-      generated && generated.meta && generated.meta.detail
-        ? generated.meta.detail
-        : (bundleDetail || 'director-dynamic-unavailable')
-    );
+  if (typeof onStatus === 'function') {
+    await onStatus(STATUS_LOCAL_NARRATION);
   }
 
   return {
@@ -356,7 +327,7 @@ async function runDirectorTurn(options) {
   );
 
   if (session && session.world && session.world.phase === 'playing' && session.world.phase !== 'ended') {
-    if (typeof onStatus === 'function') {
+    if (dynamicChoices.length && typeof onStatus === 'function') {
       await onStatus(NARRATION_CONFIG.status.choicesReady);
     }
     if (dynamicChoices.length) {

@@ -3,20 +3,20 @@
     <div class="page-shell">
       <ui-modal
         :model-value="donationGuideVisible"
-        title="支持作者"
+        title="请说书人饮茶"
         width="680px"
         @update:modelValue="donationGuideVisible = $event"
       >
         <div class="donation-guide">
           <div class="donation-guide__lead">{{ donationEntry.guideLead }}</div>
           <div class="donation-guide__section">
-            <div class="donation-guide__title">打赏会用于</div>
+            <div class="donation-guide__title">这盏残茶会用于</div>
             <div class="donation-guide__list">
               <div v-for="item in donationEntry.usageLines" :key="item" class="donation-guide__item">{{ item }}</div>
             </div>
           </div>
           <div class="donation-guide__section">
-            <div class="donation-guide__title">当前支持方式</div>
+            <div class="donation-guide__title">递茶方式</div>
             <div class="donation-guide__qr-grid">
               <button
                 v-for="channel in donationChannels"
@@ -44,14 +44,14 @@
             </div>
             <div class="donation-guide__scroll-hint">
               <span>可上下滑动查看完整说明与收款码</span>
-              <span>点击任一二维码卡片会同步切换外层打赏面板</span>
+              <span>点击任一二维码卡片会同步切换外层饮茶面板</span>
             </div>
           </div>
           <div class="donation-guide__section">
             <div class="donation-guide__title">支持前请确认</div>
             <div class="donation-guide__list">
               <div class="donation-guide__item">
-                打赏完全自愿，不影响存档、剧情、数值或账号权益。
+                这只是给执笔者递一盏残茶，不影响存档、剧情、数值或账号权益。
               </div>
             </div>
           </div>
@@ -86,6 +86,7 @@
         </div>
       </ui-modal>
       <ui-modal
+        v-if="!isMobileLayout"
         :model-value="authDialogVisible"
         :title="currentUser ? '账号状态' : authActionTitle"
         width="520px"
@@ -119,6 +120,108 @@
           </template>
         </div>
       </ui-modal>
+      <transition name="mobile-auth-sheet">
+        <div
+          v-if="isMobileLayout && authDialogVisible"
+          class="mobile-auth-sheet-mask"
+          @click.self="authDialogVisible = false"
+          @touchstart.self="beginMobileSheetDrag"
+          @touchmove.self.passive="onMobileSheetDrag"
+          @touchend.self="endMobileSheetDrag"
+        >
+          <section
+            class="mobile-auth-sheet"
+            role="dialog"
+            aria-modal="true"
+            :style="{ transform: mobileSheetDragOffset ? `translateY(${mobileSheetDragOffset}px)` : '' }"
+            @click.stop
+          >
+            <button
+              type="button"
+              class="mobile-sheet-handle mobile-sheet-handle--button"
+              aria-label="下滑或点击关闭登录面板"
+              @click="authDialogVisible = false"
+              @touchstart.stop="beginMobileSheetDrag"
+              @touchmove.stop.passive="onMobileSheetDrag"
+              @touchend.stop="endMobileSheetDrag"
+            ></button>
+            <div class="mobile-auth-sheet__head">
+              <div>
+                <div class="section-kicker">{{ currentUser ? '账号状态' : '登录注册' }}</div>
+                <div class="panel-title panel-title--small">{{ currentUser ? '当前账号' : authActionTitle }}</div>
+              </div>
+              <button type="button" class="tool-button tool-button--subtle mobile-auth-sheet__close" @click="authDialogVisible = false">关闭</button>
+            </div>
+            <template v-if="currentUser">
+              <div class="auth-dialog__identity">
+                <div class="panel-title panel-title--small">{{ currentUser.displayName || currentUser.username }}</div>
+                <div class="panel-text">{{ accessStatusText }}</div>
+              </div>
+              <div class="auth-dialog__actions">
+                <button type="button" class="tool-button tool-button--accent" @click="authDialogVisible = false">继续游戏</button>
+                <button type="button" class="tool-button tool-button--danger" @click="logout">退出登录</button>
+              </div>
+            </template>
+            <template v-else>
+              <div class="panel-text">{{ authActionSummary }}</div>
+              <input v-model.trim="authForm.username" class="native-auth-input native-auth-input--sheet" type="text" placeholder="用户名，3-24 位字母数字下划线">
+              <input v-if="authMode === 'register'" v-model.trim="authForm.displayName" class="native-auth-input native-auth-input--sheet" type="text" placeholder="显示名称，可留空">
+              <input v-model="authForm.password" class="native-auth-input native-auth-input--sheet" type="password" placeholder="密码，至少 6 位" @keyup.enter="submitAuth">
+              <div class="auth-dialog__actions">
+                <button type="button" class="tool-button tool-button--accent" :disabled="authLoading" @click="submitAuth">
+                  {{ authLoading ? '提交中…' : (authMode === 'login' ? '登录并进入游戏' : '注册并开始试玩') }}
+                </button>
+                <button type="button" class="tool-button tool-button--subtle" :disabled="authLoading" @click="authMode = authMode === 'login' ? 'register' : 'login'">
+                  {{ authMode === 'login' ? '切到注册' : '切到登录' }}
+                </button>
+              </div>
+            </template>
+          </section>
+        </div>
+      </transition>
+      <button
+        v-if="isMobileLayout"
+        type="button"
+        class="mobile-top-status"
+        aria-label="打开完整状态面板"
+        @click="mobileStatusDrawerVisible = true"
+      >
+        <span class="mobile-top-status__avatar">{{ mobileTopStatusAvatar }}</span>
+        <span class="mobile-top-status__main">
+          <strong>{{ mobileTopStatusTitle }}</strong>
+          <small>{{ mobileTopStatusSubtitle }}</small>
+        </span>
+        <span class="mobile-top-status__chips">
+          <span>{{ mobileCoreVitals.health.label }} {{ mobileCoreVitals.health.value }}</span>
+          <span>{{ mobileCoreVitals.fatigue.label }} {{ mobileCoreVitals.fatigue.value }}</span>
+        </span>
+      </button>
+      <transition name="mobile-status-drawer">
+        <div
+          v-if="isMobileLayout && mobileStatusDrawerVisible"
+          class="mobile-status-drawer-mask"
+          @click.self="mobileStatusDrawerVisible = false"
+        >
+          <aside class="mobile-status-drawer" role="dialog" aria-modal="true">
+            <div class="mobile-status-drawer__head">
+              <div>
+                <div class="section-kicker">完整状态</div>
+                <div class="panel-title panel-title--small">{{ mobileTopStatusTitle }}</div>
+                <div class="status-tip">{{ mobileTopStatusSubtitle }}</div>
+              </div>
+              <button type="button" class="tool-button tool-button--subtle" @click="mobileStatusDrawerVisible = false">关闭</button>
+            </div>
+            <div class="mobile-status-drawer__grid">
+              <div v-for="item in mobileStatusDrawerRows" :key="item.key" class="mobile-status-drawer__metric">
+                <span>{{ item.label }}</span>
+                <strong>{{ item.value }}</strong>
+                <small>{{ item.tip }}</small>
+              </div>
+            </div>
+            <div class="mobile-status-drawer__note">{{ currentMomentPanel.note }}</div>
+          </aside>
+        </div>
+      </transition>
       <game-hero-hub v-if="isMobileLayout" :view="heroHubViewModel" />
 
       <div
@@ -401,6 +504,7 @@
               class="story-scroll"
               :class="{ 'is-dragging': storyDragging }"
               @scroll.passive="handleStoryScroll"
+              @click="handleStoryBodyClick"
               @mousedown="beginStoryDrag"
               @mousemove="onStoryDrag"
               @mouseup="endStoryDrag"
@@ -415,7 +519,7 @@
                 <span class="story-waiting-dot"></span>
                 <span>正在等待正文起笔…</span>
               </div>
-              <div class="story-body story-body--enhanced" v-html="renderedStoryHtml" @click="handleStoryBodyClick"></div>
+              <div class="story-body story-body--enhanced" v-html="renderedStoryHtml"></div>
               <span class="story-type-caret" :class="{ 'story-type-caret--active': aiLoading || typewriterStoryText !== displayedStoryText }"></span>
               <div v-if="showStoryStreamTail" class="story-stream-tail">
                 <span class="story-waiting-dot"></span>
@@ -423,19 +527,25 @@
                 <span class="story-waiting-dot"></span>
                 <span>{{ waitingForNarration ? '仍在等待正文首段…' : '正文仍在继续落下，后面还有内容。' }}</span>
               </div>
+              <div v-if="showMobileTapContinueCue" class="story-tap-cue" aria-hidden="true">
+                <span class="story-tap-cue__flame">
+                  <svg viewBox="0 0 24 24" focusable="false">
+                    <path d="M12 21c-3.35 0-5.8-2.25-5.8-5.45 0-2.36 1.38-4.1 3.15-5.68 1.2-1.08 2.18-2.42 2.45-4.87 2.86 2.04 5.99 5.21 5.99 9.6C17.79 18.18 15.27 21 12 21zm.17-2.45c1.64 0 2.91-1.31 2.91-3.01 0-1.49-.83-2.74-2.53-4.43-.28 1.42-.96 2.29-1.78 3.03-.79.71-1.27 1.47-1.27 2.35 0 1.2 1.06 2.06 2.67 2.06z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span class="story-tap-cue__text">轻触续卷</span>
+              </div>
+              <button
+                v-if="showNarrativeTeaHint"
+                type="button"
+                class="narrative-tea-hint"
+                @click.stop="openDonationGuide"
+              >
+                若喜此卷乱世，不妨请执笔者饮茶
+              </button>
             </div>
 
-            <button
-              v-if="isMobileLayout"
-              type="button"
-              class="tool-button tool-button--subtle story-tools-toggle"
-              :disabled="interactionBlocked"
-              @click="mobileStoryToolsExpanded = !mobileStoryToolsExpanded"
-            >
-              {{ mobileStoryToolsExpanded ? '收起卷册工具' : '展开卷册工具' }}
-            </button>
-
-            <div v-if="!isMobileLayout || mobileStoryToolsExpanded" class="story-tools">
+            <div v-if="!isMobileLayout" class="story-tools">
               <button class="tool-button story-tool" :disabled="interactionBlocked" @click="openOverlay('map')">文字地图</button>
               <button class="tool-button story-tool" :disabled="interactionBlocked" @click="openOverlay('relations')">人物关系簿</button>
               <button class="tool-button story-tool" :disabled="interactionBlocked" @click="openOverlay('skills')">技能簿</button>
@@ -454,26 +564,6 @@
               <div class="story-archive-body">{{ latestArchivedStory.text }}</div>
             </div>
 
-            <div v-if="isMobileLayout && activeMobileView === 'story'" class="mobile-story-actions">
-              <button
-                v-if="snapshot.world.phase === 'playing'"
-                type="button"
-                class="mobile-continue-button"
-                :disabled="interactionBlocked"
-                @click="jumpToMobileSection('action')"
-              >
-                继续
-              </button>
-              <button
-                v-else
-                type="button"
-                class="mobile-continue-button mobile-continue-button--secondary"
-                :disabled="interactionBlocked"
-                @click="jumpToMobileSection('action')"
-              >
-                去落子
-              </button>
-            </div>
           </section>
           </transition>
 
@@ -1393,9 +1483,9 @@ const DRAFT_PLACEHOLDER_TITLE = '这一手正在浮现';
 const DRAFT_PLACEHOLDER_HINT = '正文和局势刚咬合起来，这一步很快会定形。';
 const DRAFT_TYPING_INTERVAL = 22;
 const DYNAMIC_SLOT_ROLE_META = {
-  0: { role: 'followup', label: '来人', title: '有人先找上门', hint: '这一格偏向邀约、求见、递话、托付，适合先接人物线。', note: '人物' },
-  1: { role: 'mainline', label: '紧线', title: '眼前这手最要紧', hint: '这一格偏向再拖就会变坏的硬压力，适合先按住主麻烦。', note: '主压' },
-  2: { role: 'wildcard', label: '偏手', title: '旁线忽然能抢', hint: '这一格偏向偏门、截胡、奇遇、抢人或绕路偷步。', note: '偏门' }
+  0: { role: 'normal', label: '推进', title: '顺水推舟', hint: '接住眼前的话头或变故，让事态自然向前。', note: '推进' },
+  1: { role: 'moral', label: '二难', title: '进退维谷', hint: '扯动软肋，在道义、人情、名声或安全之间割肉。', note: '二难' },
+  2: { role: 'wild', label: '异想', title: '剑走偏锋', hint: '狡黠、反常、不按套路，但合乎情理且出人意料。', note: '异想' }
 };
 const ACTION_DIRECTION_META = {
   governance: { key: 'governance', label: '经营', summary: '先补根基、钱粮与地盘运转。' },
@@ -1589,12 +1679,12 @@ const TEXT_MAP_GROUPS = [
 ];
 const DONATION_ENTRY = {
   enabled: true,
-  triggerLabel: '自愿打赏',
-  title: '扫码随喜支持',
-  description: '如果你愿意支持这个项目的服务器、模型调用和后续更新，可以任选微信或支付宝扫码打赏。',
-  note: '这是自愿支持入口，不影响正常游玩，也不替代现有的试玩与账号机制。',
-  guideLead: '如果你喜欢现在这套玩法、叙事和持续迭代节奏，这个入口就是给愿意随喜支持的人留的。',
-  guideFoot: '支持完全出于自愿，不会影响存档、剧情分支、账号权益或任何玩法数值。',
+  triggerLabel: '请说书人饮茶',
+  title: '给执笔者递一盏残茶',
+  description: '若这一卷乱世尚合口味，可以任选微信或支付宝递一盏残茶。',
+  note: '这只是叙事之外的自愿心意，不影响正常游玩，也不替代现有的试玩与账号机制。',
+  guideLead: '若你喜欢现在这套玩法、叙事和持续迭代节奏，这里只当给说书人留一盏残茶。',
+  guideFoot: '饮茶全凭自愿，不影响存档、剧情分支、账号权益或任何玩法数值。',
   usageLines: [
     'VPS 与域名等基础运行成本',
     '大模型接口调用与流式演绎消耗',
@@ -1795,6 +1885,9 @@ export default {
       mobileSelfDetailsExpanded: false,
       mobileStoryToolsExpanded: false,
       mobileAuthGuideExpanded: false,
+      mobileStatusDrawerVisible: false,
+      mobileSheetDragStartY: 0,
+      mobileSheetDragOffset: 0,
       storyChromeHidden: false,
       lastStoryScrollTop: 0,
       storyAutoFollow: true,
@@ -1890,6 +1983,40 @@ export default {
       const rawTitle = String(this.snapshot.world.gameTitle || '').trim();
       if (!rawTitle || rawTitle === '汉末往事之卷' || rawTitle === '汉末往昔之影') return '汉末·往昔之影';
       return rawTitle;
+    },
+    mobileTopStatusAvatar() {
+      const name = String(this.snapshot.gameState.name || '').trim();
+      return name ? name.slice(0, 1) : '汉';
+    },
+    mobileTopStatusTitle() {
+      const gs = this.snapshot.gameState || {};
+      return gs.name || this.gameTitle;
+    },
+    mobileTopStatusSubtitle() {
+      const gs = this.snapshot.gameState || {};
+      const city = this.snapshot.world.currentCityName || '未定';
+      return `${gs.identity || '布衣'} · ${city} · 第 ${Number(this.snapshot.world.turn || 0)} 回`;
+    },
+    mobileCoreVitals() {
+      const gs = this.snapshot.gameState || {};
+      return {
+        health: { key: 'health', label: '寿元', value: `${Number(gs.health || 0)}/${Number(gs.maxHealth || 100)}` },
+        fatigue: { key: 'fatigue', label: '疲惫', value: Number(gs.fatigue || 0) },
+        morale: { key: 'morale', label: '士气', value: Number(gs.morale || 0) },
+        renown: { key: 'renown', label: '名望', value: Number(gs.renown || 0) },
+        coins: { key: 'coins', label: '金钱', value: Number(gs.coins || 0) }
+      };
+    },
+    mobileStatusDrawerRows() {
+      const gs = this.snapshot.gameState || {};
+      const vitals = this.mobileCoreVitals;
+      return [
+        { ...vitals.health, tip: `身骨上限 ${Number(gs.maxHealth || 100)}，低于 35 时高风险行动更容易失控。` },
+        { ...vitals.fatigue, tip: '疲惫越高，行动越容易付出额外代价。' },
+        { ...vitals.morale, tip: '影响军旅、队伍与逆风时的承压。' },
+        { ...vitals.renown, tip: `声势 ${Number(gs.influence || 0)}，会影响人物和城池对你的响应。` },
+        { ...vitals.coins, tip: `粮秣 ${Number(gs.supplies || 0)}，部曲 ${Number(gs.troops || 0)}。` }
+      ];
     },
     heroDescription() {
       if (this.isMobileLayout) {
@@ -2351,7 +2478,7 @@ export default {
         mobileStarterSummary: this.mobileStarterSummary,
         mobileStarterSteps: this.mobileStarterSteps,
         jumpToMobileSection: this.jumpToMobileSection,
-        scrollToAuthZone: () => this.scrollToSection('authZone'),
+        scrollToAuthZone: () => (this.isMobileLayout ? this.openAuthDialog() : this.scrollToSection('authZone')),
         setupPhaseChoices: this.setupPhaseChoices,
         interactionBlocked: this.interactionBlocked,
         submitChoice: this.submitChoice,
@@ -2467,7 +2594,7 @@ export default {
       }
       items.push({ key: 'character-stats', label: '角色属性', value: '查看内政、军务、谋略、武艺' });
       if (this.donationEntry && this.donationEntry.enabled) {
-        items.push({ key: 'donation-guide', label: this.donationEntry.triggerLabel, value: '查看支持说明' });
+        items.push({ key: 'donation-guide', label: this.donationEntry.triggerLabel, value: '查看茶案' });
       }
       items.push({ key: 'reset', label: '重开此卷', value: '重新开始当前存档' });
       if (this.currentUser) items.push({ key: 'logout', label: '退出登录', value: '返回试玩状态' });
@@ -2478,9 +2605,9 @@ export default {
       return {
         key: 'donation-guide',
         label: this.donationEntry.triggerLabel,
-        title: '支持创作',
-        hint: '喜欢这局就点一下',
-        value: '扫码随喜',
+        title: '残茶一盏',
+        hint: '若喜此卷可点开',
+        value: '茶案已备',
         pulse: !this.donationGuideVisible
       };
     },
@@ -2766,6 +2893,23 @@ export default {
     narrationStreaming() { return this.aiLoading && !this.narrationDoneReceived; },
     waitingForNarration() { return this.narrationStreaming && this.placeholderStreaming && !this.streamingText; },
     showStoryStreamTail() { return this.narrationStreaming && !this.waitingForNarration && !!this.streamingText; },
+    showMobileTapContinueCue() {
+      return this.isMobileLayout
+        && this.activeMobileView === 'story'
+        && !this.interactionBlocked
+        && !this.narrationStreaming
+        && !this.aiLoading;
+    },
+    showNarrativeTeaHint() {
+      if (!this.isMobileLayout || this.activeMobileView !== 'story') return false;
+      if (this.narrationStreaming || this.aiLoading || this.interactionLocked) return false;
+      const turn = Number(this.snapshot.world.turn || 0);
+      const morale = Number(this.snapshot.gameState.morale || 0);
+      const renown = Number(this.snapshot.gameState.renown || 0);
+      const lastDelta = String(this.snapshot.gameState.lastDeltaLine || '');
+      const peakSignal = /大胜|大成|名望|士气|威名|好感|\+\d+/.test(lastDelta);
+      return turn > 0 && (peakSignal || morale >= 45 || renown >= 18) && this.activeMobileView === 'story';
+    },
     effectiveWorldPhase() {
       return this.resolveChoicePhase(this.aiLoading ? this.liveChoices : this.snapshot.choices);
     },
@@ -4687,6 +4831,23 @@ export default {
     openAuthDialog() {
       this.authDialogVisible = true;
     },
+    beginMobileSheetDrag(event) {
+      if (!this.isMobileLayout || !event || !event.touches || !event.touches.length) return;
+      this.mobileSheetDragStartY = event.touches[0].clientY;
+      this.mobileSheetDragOffset = 0;
+    },
+    onMobileSheetDrag(event) {
+      if (!this.isMobileLayout || !event || !event.touches || !event.touches.length || !this.mobileSheetDragStartY) return;
+      this.mobileSheetDragOffset = Math.max(0, Math.round(event.touches[0].clientY - this.mobileSheetDragStartY));
+    },
+    endMobileSheetDrag() {
+      if (!this.isMobileLayout) return;
+      if (this.mobileSheetDragOffset > 72) {
+        this.authDialogVisible = false;
+      }
+      this.mobileSheetDragStartY = 0;
+      this.mobileSheetDragOffset = 0;
+    },
     directionPriorityScore(key) {
       const gs = this.snapshot.gameState || {};
       const territory = this.territorySummary || {};
@@ -5163,7 +5324,31 @@ export default {
     },
     handleCrpgActionSelect(action) {
       if (!action || !action.choice) return;
+      this.playDecisionSealSound();
       this.submitChoice(action.choice);
+    },
+    playDecisionSealSound() {
+      if (this.isMobileLayout || typeof window === 'undefined') return;
+      const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextCtor) return;
+      try {
+        const ctx = new AudioContextCtor();
+        const oscillator = ctx.createOscillator();
+        const gain = ctx.createGain();
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(148, ctx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(92, ctx.currentTime + 0.11);
+        gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.028, ctx.currentTime + 0.012);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.13);
+        oscillator.connect(gain);
+        gain.connect(ctx.destination);
+        oscillator.start();
+        oscillator.stop(ctx.currentTime + 0.14);
+        oscillator.onended = () => ctx.close();
+      } catch (e) {
+        void e;
+      }
     },
     stopStoryTyping() {
       if (this.storyTypingTimer) {
@@ -5295,8 +5480,14 @@ export default {
     },
     handleStoryBodyClick(event) {
       const target = event && event.target;
-      if (!target || !target.dataset || !target.dataset.glossary) return;
-      this.openGlossary(target.dataset.glossary);
+      const glossaryTarget = target && target.closest ? target.closest('[data-glossary]') : null;
+      if (glossaryTarget && glossaryTarget.dataset && glossaryTarget.dataset.glossary) {
+        this.openGlossary(glossaryTarget.dataset.glossary);
+        return;
+      }
+      if (!this.isMobileLayout || this.activeMobileView !== 'story') return;
+      if (this.storyDragging || this.aiLoading || this.narrationStreaming || this.interactionBlocked) return;
+      this.jumpToMobileSection('action');
     },
     openGlossary(key) {
       if (!STORY_GLOSSARY[key]) return;
@@ -6451,6 +6642,9 @@ export default {
         actionText = `action:${kind}:${relation.id}:${mode || ''}`;
       }
       if (!actionText) return;
+      if (this.isMobileLayout && typeof navigator !== 'undefined' && navigator.vibrate) {
+        navigator.vibrate(12);
+      }
       const payload = { actionText };
       if (choice.source === 'dynamic') {
         payload.choiceMeta = {
@@ -13945,6 +14139,481 @@ export default {
   max-width: 960px;
   margin: 24px auto;
   padding: 28px;
+}
+
+@media (max-width: 820px) {
+  .chronicle-page {
+    background:
+      radial-gradient(circle at 12% 0%, rgba(139, 54, 43, 0.2), transparent 28%),
+      radial-gradient(circle at 90% 12%, rgba(199, 149, 82, 0.12), transparent 32%),
+      linear-gradient(180deg, #100d0c 0%, #070606 100%);
+  }
+
+  .chronicle-page::before {
+    opacity: .48;
+    background-size: 180px 180px, 100% 100%;
+  }
+
+  .chronicle-page::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(circle, rgba(209, 196, 169, .16) 0 1px, transparent 1.5px),
+      radial-gradient(circle, rgba(170, 95, 66, .12) 0 1px, transparent 1.5px);
+    background-size: 92px 140px, 130px 190px;
+    animation: mobileAshFall 16s linear infinite;
+    opacity: .32;
+  }
+
+  .chronicle-page .page-shell {
+    padding-top: calc(76px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .chronicle-page .hero-hub .title-zone,
+  .chronicle-page .hero-hub .mobile-status-strip,
+  .chronicle-page .hero-hub .mobile-stage-switch {
+    display: none !important;
+  }
+
+  .chronicle-page .mobile-top-status {
+    position: fixed;
+    top: calc(8px + env(safe-area-inset-top, 0px));
+    left: max(10px, env(safe-area-inset-left, 0px));
+    right: max(10px, env(safe-area-inset-right, 0px));
+    z-index: 95;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    min-height: 56px;
+    padding: 7px 10px;
+    border: 1px solid rgba(214, 174, 116, .18);
+    border-radius: 18px;
+    color: #ead8b9;
+    background:
+      radial-gradient(circle at 16% 0%, rgba(215, 176, 117, .14), transparent 34%),
+      linear-gradient(180deg, rgba(28, 22, 19, .84), rgba(10, 8, 7, .78));
+    box-shadow: 0 16px 36px rgba(0, 0, 0, .36), inset 0 1px 0 rgba(255, 244, 227, .08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    font: inherit;
+    text-align: left;
+    touch-action: manipulation;
+  }
+
+  .chronicle-page .mobile-top-status:active {
+    transform: translateY(1px) scale(.99);
+  }
+
+  .chronicle-page .mobile-top-status__avatar {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    color: #2a1712;
+    background:
+      radial-gradient(circle at 35% 24%, #fff0cc, #d7a967 64%, #7f3428);
+    font-size: 18px;
+    font-weight: 900;
+    box-shadow: 0 0 0 1px rgba(255, 238, 198, .18), 0 8px 20px rgba(0, 0, 0, .28);
+  }
+
+  .chronicle-page .mobile-top-status__main {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .chronicle-page .mobile-top-status__main strong {
+    overflow: hidden;
+    color: #fff1d6;
+    font-size: 15px;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .chronicle-page .mobile-top-status__main small {
+    overflow: hidden;
+    color: rgba(209, 196, 169, .78);
+    font-size: 11px;
+    line-height: 1.3;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .chronicle-page .mobile-top-status__chips {
+    display: grid;
+    gap: 4px;
+  }
+
+  .chronicle-page .mobile-top-status__chips span {
+    min-width: 72px;
+    padding: 3px 7px;
+    border-radius: 999px;
+    color: #efd9b5;
+    background: rgba(255, 244, 227, .06);
+    border: 1px solid rgba(214, 174, 116, .12);
+    font-size: 11px;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .chronicle-page .mobile-status-drawer-mask,
+  .chronicle-page .mobile-auth-sheet-mask {
+    position: fixed;
+    inset: 0;
+    z-index: 120;
+    background: rgba(0, 0, 0, .42);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+  }
+
+  .chronicle-page .mobile-status-drawer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: ~"min(86vw, 360px)";
+    padding: calc(22px + env(safe-area-inset-top, 0px)) 16px calc(18px + env(safe-area-inset-bottom, 0px));
+    border-left: 1px solid rgba(214, 174, 116, .2);
+    color: #ead8bd;
+    background:
+      radial-gradient(circle at 20% 0%, rgba(217, 171, 106, .14), transparent 32%),
+      linear-gradient(180deg, rgba(26, 21, 18, .86), rgba(9, 8, 8, .9));
+    box-shadow: -24px 0 50px rgba(0, 0, 0, .46);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    overflow-y: auto;
+  }
+
+  .chronicle-page .mobile-status-drawer::before,
+  .chronicle-page .mobile-auth-sheet::before,
+  .chronicle-page .ability-zone--sheet .intel-hub::before,
+  .chronicle-page .auth-guide-sheet::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background-image: radial-gradient(circle, rgba(255, 244, 227, .12) 0 .6px, transparent .7px);
+    background-size: 4px 4px;
+    opacity: .22;
+    mix-blend-mode: screen;
+  }
+
+  .chronicle-page .mobile-status-drawer__head {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .chronicle-page .mobile-status-drawer__grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 10px;
+  }
+
+  .chronicle-page .mobile-status-drawer__metric {
+    padding: 13px;
+    border: 1px solid rgba(214, 174, 116, .14);
+    border-radius: 14px;
+    background: rgba(255, 244, 227, .045);
+  }
+
+  .chronicle-page .mobile-status-drawer__metric span,
+  .chronicle-page .mobile-status-drawer__metric small {
+    display: block;
+    color: rgba(209, 196, 169, .78);
+    font-size: 12px;
+    line-height: 1.55;
+  }
+
+  .chronicle-page .mobile-status-drawer__metric strong {
+    display: block;
+    margin: 3px 0;
+    color: #fff0d2;
+    font-size: 24px;
+    line-height: 1.1;
+  }
+
+  .chronicle-page .mobile-status-drawer__note {
+    position: relative;
+    z-index: 1;
+    margin-top: 14px;
+    padding-left: 12px;
+    border-left: 2px solid rgba(214, 174, 116, .38);
+    color: #d1c4a9;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .chronicle-page .mobile-auth-sheet {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    max-height: ~"min(74vh, 620px)";
+    padding: 10px 18px calc(18px + env(safe-area-inset-bottom, 0px));
+    border: 1px solid rgba(214, 174, 116, .2);
+    border-bottom: 0;
+    border-radius: 22px 22px 0 0;
+    color: #ead8bd;
+    background:
+      radial-gradient(circle at 12% 0%, rgba(217, 171, 106, .13), transparent 34%),
+      linear-gradient(180deg, rgba(28, 23, 20, .88), rgba(9, 8, 8, .94));
+    box-shadow: 0 -24px 50px rgba(0, 0, 0, .46);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    overflow-y: auto;
+    transition: transform .18s ease;
+  }
+
+  .chronicle-page .mobile-sheet-handle--button {
+    display: block;
+    width: 46px;
+    height: 20px;
+    margin: 0 auto 6px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+
+  .chronicle-page .mobile-sheet-handle--button::before {
+    content: '';
+    display: block;
+    width: 42px;
+    height: 4px;
+    margin: 8px auto;
+    border-radius: 999px;
+    background: rgba(209, 196, 169, .42);
+  }
+
+  .chronicle-page .mobile-auth-sheet__head {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .chronicle-page .mobile-auth-sheet > .panel-text,
+  .chronicle-page .mobile-auth-sheet > .native-auth-input,
+  .chronicle-page .mobile-auth-sheet > .auth-dialog__actions,
+  .chronicle-page .mobile-auth-sheet > .auth-dialog__identity {
+    position: relative;
+    z-index: 1;
+  }
+
+  .chronicle-page .native-auth-input,
+  .chronicle-page .native-auth-input--dialog,
+  .chronicle-page .native-auth-input--sheet {
+    min-height: 48px;
+    border: 0;
+    border-bottom: 1px solid rgba(214, 174, 116, .28);
+    border-radius: 4px 4px 0 0;
+    background: rgba(255, 244, 227, .055);
+    color: #f2e1c4;
+    box-shadow: none;
+  }
+
+  .chronicle-page .native-auth-input:focus,
+  .chronicle-page .native-auth-input--dialog:focus,
+  .chronicle-page .native-auth-input--sheet:focus {
+    border-bottom-color: rgba(236, 194, 127, .72);
+    background: rgba(255, 244, 227, .08);
+    outline: none;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, .16);
+  }
+
+  .chronicle-page .story-scroll {
+    padding: 16px 14px 18px;
+  }
+
+  .chronicle-page .story-body,
+  .chronicle-page .story-body--enhanced {
+    color: #d1c4a9;
+    font-size: 16px;
+    line-height: 1.78;
+    letter-spacing: 0;
+  }
+
+  .chronicle-page .story-body--enhanced p,
+  .chronicle-page .story-body--enhanced div {
+    margin: 0 0 1.05em;
+    clip-path: inset(0 0 0 0 round 2px);
+  }
+
+  .chronicle-page .mobile-view-enter-active .story-body--enhanced {
+    animation: mobileParagraphRise .22s ease both;
+  }
+
+  .chronicle-page .story-scroll::after {
+    content: '';
+    position: sticky;
+    bottom: -18px;
+    display: block;
+    height: 74px;
+    margin: -48px -14px 0;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(8, 7, 7, 0), rgba(8, 7, 7, .82) 62%, rgba(8, 7, 7, .96));
+  }
+
+  .chronicle-page .story-tap-cue {
+    position: sticky;
+    bottom: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    width: 100%;
+    height: 22px;
+    margin-top: -18px;
+    color: rgba(205, 169, 105, .72);
+    pointer-events: none;
+  }
+
+  .chronicle-page .story-tap-cue__flame {
+    display: grid;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    filter: drop-shadow(0 0 8px rgba(205, 120, 62, .24));
+    animation: storyCueBreath 2.6s ease-in-out infinite;
+  }
+
+  .chronicle-page .story-tap-cue__flame svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .chronicle-page .story-tap-cue__text {
+    color: rgba(209, 196, 169, .58);
+    font-size: 11px;
+    letter-spacing: .18em;
+    line-height: 1;
+    text-shadow: 0 0 10px rgba(0, 0, 0, .72);
+    animation: storyCueTextFade 2.8s ease-in-out infinite;
+  }
+
+  .chronicle-page .narrative-tea-hint {
+    display: block;
+    width: fit-content;
+    margin: 18px auto 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: rgba(209, 196, 169, .58);
+    font: inherit;
+    font-size: 12px;
+    line-height: 1.6;
+    letter-spacing: 0;
+    cursor: pointer;
+    animation: teaHintFade 1.5s ease both;
+  }
+
+  .chronicle-page .narrative-tea-hint:active {
+    color: rgba(226, 195, 143, .78);
+  }
+
+  .chronicle-page .auth-entry {
+    margin-top: 0;
+  }
+}
+
+@keyframes mobileAshFall {
+  from { background-position: 0 -80px, 40px -120px; }
+  to { background-position: 20px 180px, -10px 260px; }
+}
+
+@keyframes mobileParagraphRise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes storyCueBreath {
+  0%,
+  100% {
+    opacity: .42;
+    transform: translateY(0) scale(.96);
+  }
+  50% {
+    opacity: .78;
+    transform: translateY(2px) scale(1);
+  }
+}
+
+@keyframes storyCueTextFade {
+  0%,
+  100% {
+    opacity: .42;
+  }
+  50% {
+    opacity: .72;
+  }
+}
+
+@keyframes teaHintFade {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobile-auth-sheet-enter-active,
+.mobile-auth-sheet-leave-active,
+.mobile-status-drawer-enter-active,
+.mobile-status-drawer-leave-active {
+  transition: opacity .2s ease;
+}
+
+.mobile-auth-sheet-enter-from,
+.mobile-auth-sheet-leave-to,
+.mobile-status-drawer-enter-from,
+.mobile-status-drawer-leave-to {
+  opacity: 0;
+}
+
+.mobile-auth-sheet-enter-active .mobile-auth-sheet,
+.mobile-auth-sheet-leave-active .mobile-auth-sheet {
+  transition: transform .22s ease;
+}
+
+.mobile-auth-sheet-enter-from .mobile-auth-sheet,
+.mobile-auth-sheet-leave-to .mobile-auth-sheet {
+  transform: translateY(100%);
+}
+
+.mobile-status-drawer-enter-active .mobile-status-drawer,
+.mobile-status-drawer-leave-active .mobile-status-drawer {
+  transition: transform .22s ease;
+}
+
+.mobile-status-drawer-enter-from .mobile-status-drawer,
+.mobile-status-drawer-leave-to .mobile-status-drawer {
+  transform: translateX(100%);
 }
 }
 

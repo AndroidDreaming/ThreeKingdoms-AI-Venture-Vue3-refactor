@@ -67,6 +67,11 @@
                   :disabled="action.disabled"
                   @click="emit('action-select', action)"
                 >
+                  <span class="action-card__trace" aria-hidden="true">
+                    <svg viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false">
+                      <path d="M6 1 H99 V91 L91 99 H1 V8 Z" />
+                    </svg>
+                  </span>
                   <span class="action-card__seal" v-html="action.icon || activeGroupIcon"></span>
                   <span class="action-card__body">
                     <strong>{{ action.label }}</strong>
@@ -107,6 +112,11 @@
                   :disabled="action.disabled"
                   @click="emit('action-select', action)"
                 >
+                  <span class="action-card__trace" aria-hidden="true">
+                    <svg viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false">
+                      <path d="M6 1 H99 V91 L91 99 H1 V8 Z" />
+                    </svg>
+                  </span>
                   <span class="action-card__seal" v-html="action.icon || activeGroupIcon"></span>
                   <span class="action-card__body">
                     <strong>{{ action.label }}</strong>
@@ -315,6 +325,8 @@ function formatRequirement(requirement) {
   overflow: hidden;
   background:
     radial-gradient(circle at 50% -18%, rgba(184, 153, 71, 0.1), transparent 34%),
+    radial-gradient(circle at 18% 72%, rgba(112, 80, 48, 0.08), transparent 26%),
+    repeating-radial-gradient(circle at 12% 8%, rgba(255, 247, 229, 0.018) 0 1px, transparent 1px 5px),
     linear-gradient(180deg, #110e0d 0%, var(--crpg-bg) 42%, #070605 100%);
   color: var(--crpg-paper);
   font-family: "Noto Serif SC", "Songti SC", SimSun, serif;
@@ -331,6 +343,22 @@ function formatRequirement(requirement) {
     linear-gradient(90deg, rgba(227, 216, 200, 0.018) 1px, transparent 1px),
     radial-gradient(circle at 1px 1px, rgba(184, 153, 71, 0.28) 1px, transparent 0);
   background-size: 34px 34px, 34px 34px, 19px 19px;
+}
+
+.crpg-shell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.18;
+  background-image:
+    radial-gradient(circle, rgba(202, 166, 104, 0.42) 0 1px, transparent 1.6px),
+    radial-gradient(circle, rgba(205, 196, 177, 0.22) 0 1px, transparent 1.8px),
+    radial-gradient(circle, rgba(93, 76, 55, 0.32) 0 1px, transparent 1.4px);
+  background-position: 10% 110%, 70% 105%, 44% 112%;
+  background-size: 180px 240px, 260px 320px, 140px 220px;
+  mix-blend-mode: screen;
+  animation: crpgAshFall 34s linear infinite;
 }
 
 .crpg-shell__body {
@@ -366,11 +394,13 @@ function formatRequirement(requirement) {
 }
 
 .action-desk {
+  position: relative;
   flex: 0 0 318px;
   min-height: 0;
   padding: 14px;
   clip-path: var(--crpg-chamfer);
   background:
+    repeating-radial-gradient(circle at 18% 24%, rgba(255, 247, 229, 0.02) 0 1px, transparent 1px 5px),
     linear-gradient(145deg, rgba(255, 255, 255, 0.035), transparent 34%),
     linear-gradient(180deg, var(--crpg-panel-strong), #120f0d);
   box-shadow:
@@ -486,14 +516,18 @@ function formatRequirement(requirement) {
   border: 0;
   clip-path: var(--crpg-chamfer);
   background:
+    repeating-radial-gradient(circle at 16% 18%, rgba(255, 247, 229, 0.018) 0 1px, transparent 1px 6px),
     linear-gradient(135deg, rgba(184, 153, 71, 0.13), transparent 42%),
     linear-gradient(180deg, #211b16, #15110f);
+  backdrop-filter: blur(10px);
   box-shadow:
     inset 0 0 0 1px rgba(184, 153, 71, 0.15),
     inset 0 -10px 24px rgba(0, 0, 0, 0.28);
   color: var(--crpg-paper);
   cursor: pointer;
   font-family: inherit;
+  isolation: isolate;
+  overflow: hidden;
   text-align: left;
   transition: var(--crpg-motion);
 }
@@ -550,7 +584,8 @@ function formatRequirement(requirement) {
 }
 
 .action-card:active {
-  transform: scale(0.98);
+  transform: translateY(1px) scale(0.985);
+  filter: brightness(0.96);
 }
 
 .action-card--disabled {
@@ -561,6 +596,45 @@ function formatRequirement(requirement) {
 
 .action-card--disabled:hover {
   transform: none;
+}
+
+.action-card__trace {
+  position: absolute;
+  inset: 1px;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.34;
+}
+
+.action-card > :not(.action-card__trace) {
+  position: relative;
+  z-index: 1;
+}
+
+.action-card__trace svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.action-card__trace path {
+  fill: none;
+  stroke: rgba(198, 157, 91, 0.62);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 72 260;
+  stroke-dashoffset: 180;
+  filter: drop-shadow(0 0 5px rgba(184, 153, 71, 0.18));
+  transition: stroke 300ms ease, opacity 300ms ease;
+}
+
+.action-card:hover .action-card__trace {
+  opacity: 0.82;
+}
+
+.action-card:hover .action-card__trace path {
+  animation: actionTraceFlow 5.8s linear infinite;
+  stroke: rgba(218, 179, 111, 0.78);
 }
 
 .action-card__seal {
@@ -661,6 +735,24 @@ function formatRequirement(requirement) {
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes crpgAshFall {
+  0% { background-position: 10% 110%, 70% 105%, 44% 112%; }
+  100% { background-position: 12% -20%, 68% -28%, 46% -18%; }
+}
+
+@keyframes actionTraceFlow {
+  0% { stroke-dashoffset: 180; }
+  100% { stroke-dashoffset: -152; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crpg-shell::after,
+  .action-card:hover .action-card__trace path,
+  .action-desk__pending span {
+    animation: none;
+  }
 }
 
 @media (max-width: 1080px) {

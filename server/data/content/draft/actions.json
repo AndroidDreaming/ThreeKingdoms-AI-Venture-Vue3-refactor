@@ -1,0 +1,96 @@
+[
+  {
+    "id": "action:govern:granary",
+    "text": "修渠清仓",
+    "actionText": "action:govern:granary",
+    "hint": "把水路、仓口和转运节奏重新理顺，会先粮秣，修建成功后每回合增长",
+    "category": "经营",
+    "actionKind": "govern",
+    "actionMode": "granary",
+    "direction": "governance",
+    "group": "personal",
+    "unlock": {
+      "stats": {
+        "governance": 24,
+        "supplies": 18
+      },
+      "skillsAnyOf": [
+        {
+          "id": "memorial_craft",
+          "label": "章表筹画"
+        },
+        {
+          "id": "civil_admin_pillar",
+          "label": "吏治成序"
+        },
+        {
+          "id": "qingnang_inheritance",
+          "label": "青囊养息"
+        }
+      ]
+    }
+  },
+  {
+    "id": "action:trade:caravan",
+    "text": "商队押运",
+    "actionText": "action:trade:caravan",
+    "hint": "把货路往更远处压出去，赌的是大收益，也会换来新地界的人脉与风险。",
+    "category": "经营",
+    "actionKind": "trade",
+    "actionMode": "caravan",
+    "direction": "governance",
+    "group": "personal",
+    "unlock": {
+      "stats": {
+        "commerce": 26,
+        "coins": 30
+      },
+      "skillsAnyOf": [
+        {
+          "id": "market_instinct",
+          "label": "市路嗅觉"
+        },
+        {
+          "id": "mercantile_margin",
+          "label": "价差落袋"
+        },
+        {
+          "id": "mercantile_convoy",
+          "label": "商队调度"
+        }
+      ]
+    }
+  },
+  {
+    "id": "action:romance:promise",
+    "text": "试表心迹",
+    "actionText": "action:romance:promise",
+    "hint": "不再只停在气氛里，朝已结识的人把心意说得更明白些，看对方是什么态度。",
+    "category": "情感",
+    "actionKind": "romance",
+    "actionMode": "promise",
+    "direction": "network",
+    "group": "personal",
+    "targetType": "relation",
+    "relationScope": "romance",
+    "unlock": {
+      "stats": {
+        "charm": 14,
+        "diplomacy": 12
+      }
+    }
+  },
+  {
+    "id": "action:romance:approach",
+    "text": "借灯夜会",
+    "actionText": "action:romance:approach",
+    "hint": "从已结识人物里挑一个不至于惊动旁人的时刻，把话说近一点，拉近距离。",
+    "category": "情感",
+    "actionKind": "romance",
+    "actionMode": "approach",
+    "direction": "network",
+    "group": "personal",
+    "targetType": "relation",
+    "relationScope": "romance"
+  }
+]

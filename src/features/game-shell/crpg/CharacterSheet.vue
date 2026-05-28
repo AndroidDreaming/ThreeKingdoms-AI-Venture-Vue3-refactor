@@ -36,7 +36,10 @@
         v-for="vital in vitals"
         :key="vital.key"
         class="vital-row"
-        :class="{ 'vital-row--critical': Number(vital.percent || 0) < 20 }"
+        :class="{
+          'vital-row--critical': Number(vital.percent || 0) < 20,
+          'vital-row--morale-low': isMoraleVital(vital) && Number(vital.percent || 0) < 36
+        }"
       >
         <div class="vital-row__copy">
           <span>{{ vital.label }}</span>
@@ -89,6 +92,12 @@ defineProps({
     default: () => []
   }
 });
+
+function isMoraleVital(vital) {
+  const key = String((vital && vital.key) || '').toLowerCase();
+  const label = String((vital && vital.label) || '');
+  return key.includes('morale') || label.includes('士气');
+}
 </script>
 
 <style scoped lang="less">
@@ -178,6 +187,7 @@ defineProps({
   min-height: 70px;
   padding: 12px 10px;
   background:
+    repeating-radial-gradient(circle at 18% 26%, rgba(255, 247, 229, 0.02) 0 1px, transparent 1px 5px),
     linear-gradient(145deg, rgba(255, 247, 229, 0.025), transparent 44%),
     #171412;
 }
@@ -195,9 +205,17 @@ defineProps({
   align-items: center;
   justify-content: center;
   flex: 0 0 24px;
-  width: 17px;
-  height: 17px;
-  color: #b89947;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 38% 32%, rgba(255, 247, 229, 0.28), transparent 28%),
+    linear-gradient(135deg, rgba(184, 153, 71, 0.24), rgba(85, 70, 48, 0.16));
+  box-shadow:
+    inset 0 0 0 1px rgba(184, 153, 71, 0.26),
+    inset 0 -5px 8px rgba(0, 0, 0, 0.42),
+    0 6px 14px rgba(0, 0, 0, 0.24);
+  color: #c9ad71;
 }
 
 .metric-cell__icon :deep(svg) {
@@ -271,6 +289,7 @@ defineProps({
 }
 
 .vital-row {
+  position: relative;
   margin-top: 15px;
   padding: 8px;
   box-shadow: inset 0 0 0 1px transparent;
@@ -301,16 +320,34 @@ defineProps({
   height: 13px;
   overflow: hidden;
   padding: 2px;
-  background: #000;
-  box-shadow: inset 0 0 0 1px #3a2d20;
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 7px) 100%, 0 100%);
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.96), rgba(30, 24, 18, 0.9)),
+    #000;
+  box-shadow:
+    inset 0 0 0 1px rgba(117, 91, 55, 0.82),
+    0 0 0 1px rgba(184, 153, 71, 0.08);
+}
+
+.vital-row__bar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(184, 153, 71, 0.36), transparent 24%, transparent 76%, rgba(184, 153, 71, 0.26)),
+    repeating-linear-gradient(90deg, transparent 0 14px, rgba(255, 247, 229, 0.055) 14px 15px);
+  opacity: 0.5;
 }
 
 .vital-row__fill {
   height: 100%;
+  clip-path: polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%);
   background:
     repeating-linear-gradient(45deg, #b89947, #b89947 4px, #7a6027 4px, #7a6027 8px);
   box-shadow: 0 0 12px rgba(184, 153, 71, 0.24);
   transition: all 300ms cubic-bezier(0.25, 1, 0.5, 1);
+  animation: vitalBreath 4.6s ease-in-out infinite;
 }
 
 .vital-row__fill--danger {
@@ -325,6 +362,10 @@ defineProps({
   box-shadow: 0 0 12px rgba(72, 107, 85, 0.28);
 }
 
+.vital-row--morale-low .vital-row__fill {
+  animation: vitalBreath 4.6s ease-in-out infinite, moraleLowFlicker 3.2s ease-in-out infinite;
+}
+
 .vital-row__meta {
   display: block;
   margin-top: 7px;
@@ -336,6 +377,32 @@ defineProps({
 @keyframes criticalPulse {
   0%, 100% { filter: brightness(1); }
   50% { filter: brightness(1.16); }
+}
+
+@keyframes vitalBreath {
+  0%, 100% {
+    filter: brightness(0.96) saturate(0.94);
+    transform: scaleY(0.92);
+  }
+  50% {
+    filter: brightness(1.08) saturate(1.04);
+    transform: scaleY(1);
+  }
+}
+
+@keyframes moraleLowFlicker {
+  0%, 100% { opacity: 0.72; }
+  47% { opacity: 0.92; }
+  51% { opacity: 0.58; }
+  56% { opacity: 0.88; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vital-row--critical,
+  .vital-row__fill,
+  .vital-row--morale-low .vital-row__fill {
+    animation: none;
+  }
 }
 
 @media (max-width: 1080px) {

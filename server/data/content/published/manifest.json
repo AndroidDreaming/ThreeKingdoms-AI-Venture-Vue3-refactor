@@ -1,0 +1,13 @@
+{
+  "version": "builtin",
+  "publishedAt": "",
+  "entityCounts": {},
+  "types": [
+    "characters",
+    "sects",
+    "routes",
+    "martialSkills",
+    "actions",
+    "optionTemplates"
+  ]
+}

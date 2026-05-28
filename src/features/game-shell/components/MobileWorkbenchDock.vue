@@ -38,16 +38,16 @@ export default {
 <style scoped lang="less">
 .mobile-bottom-dock {
   position: fixed;
-  right: max(10px, env(safe-area-inset-right, 0px));
-  bottom: max(8px, env(safe-area-inset-bottom, 0px));
-  left: max(10px, env(safe-area-inset-left, 0px));
+  right: 0;
+  bottom: 0;
+  left: 0;
   z-index: 80;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-  min-height: 64px;
-  padding: 8px;
-  border-radius: 20px;
+  gap: 6px;
+  min-height: calc(64px + env(safe-area-inset-bottom, 0px));
+  padding: 8px max(10px, env(safe-area-inset-right, 0px)) calc(8px + env(safe-area-inset-bottom, 0px)) max(10px, env(safe-area-inset-left, 0px));
+  border-radius: 18px 18px 0 0;
 }
 
 .mobile-bottom-dock--refined {
@@ -63,11 +63,13 @@ export default {
 
 .mobile-bottom-dock__item {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 4px;
   min-width: 0;
   min-height: 52px;
-  padding: 7px 4px 6px;
+  padding: 6px 4px 5px;
   border: 1px solid transparent;
   border-radius: 14px;
   background: transparent;
@@ -93,8 +95,8 @@ export default {
 }
 
 .mobile-bottom-dock__icon {
-  width: 22px;
-  height: 22px;
+  width: 25px;
+  height: 25px;
   color: currentColor;
 }
 
@@ -105,7 +107,7 @@ export default {
 }
 
 .mobile-bottom-dock__label {
-  margin-left: 6px;
+  margin-left: 0;
   font-size: 13px;
   font-weight: 700;
   line-height: 1;

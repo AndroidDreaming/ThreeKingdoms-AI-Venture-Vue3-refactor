@@ -3,7 +3,6 @@ const path = require('path');
 const { DEFAULT_MODEL } = require('./game/chronicleV2Constants');
 const { classifyIntent } = require('./game/chronicleV5IntentClassifier');
 const { processAction } = require('./game/chronicleV5RulesEngine');
-const { buildLocalDynamicChoices } = require('./game/chronicleV5ChoiceGenerator');
 const { runDirectorTurn } = require('./game/chronicleV5Director');
 const { NARRATION_CONFIG } = require('./game/chronicleV5NarrationConfigSafe');
 const { repairScene, normalizeNarrationText, chooseNarrationText, chooseNarrationTextDetailed } = require('./game/chronicleV5NarrationGuard');
@@ -21,6 +20,15 @@ const {
   summarizeGuestAccess
 } = require('./game/chronicleV5SessionStore');
 const { CONFIG_FILE, getProviderRuntimeConfig, getPublicRuntimeConfig, isProviderEnabled } = require('./config/runtimeConfig');
+const {
+  CONTENT_TYPES,
+  getContentManifest,
+  getDraftPreviewEntityList,
+  saveDraftEntity,
+  deleteDraftEntity,
+  validateContentDraft,
+  publishDraftContent
+} = require('./game/contentRegistry');
 const {
   DEFAULT_TURN_PACK_TURNS,
   DEFAULT_MONTH_CARD_DAYS,
@@ -58,6 +66,7 @@ const MESSAGE_ACTION_REQUIRED = '行动不能为空。';
 const MESSAGE_NARRATION_FAILED = '续写失败。';
 const MESSAGE_ACCESS_EXHAUSTED = '试玩已用完，且当前无可用回合或月卡，请购买回合包或月卡。';
 const GAME_TITLE = '汉末风云录';
+const AUTH_COOKIE_NAME = 'tk_refactor_auth_token_v1';
 
 function toSnapshot(session) {
   if (session && session.gameState) ensureDramaticLayer(session.gameState);
@@ -267,48 +276,32 @@ async function emitDynamicChoices(res, session, dynamicChoices) {
   }
 }
 
-function mergeDynamicChoiceMeta(primaryMeta, fallbackMeta) {
-  return {
-    mode: fallbackMeta && fallbackMeta.mode ? fallbackMeta.mode : 'fallback',
-    reason: fallbackMeta && fallbackMeta.reason ? fallbackMeta.reason : 'local_dynamic_fallback',
-    detail: [
-      fallbackMeta && fallbackMeta.detail ? fallbackMeta.detail : '',
-      primaryMeta && primaryMeta.mode ? `remote-mode:${primaryMeta.mode}` : '',
-      primaryMeta && primaryMeta.reason ? `remote-reason:${primaryMeta.reason}` : '',
-      primaryMeta && primaryMeta.detail ? `remote-detail:${primaryMeta.detail}` : ''
-    ].filter(Boolean).join(' || ')
-  };
-}
-
-async function emitInstantFallbackChoices(res, session, action, statusMessage, previousMeta) {
-  if (!canEmitNarrativeDynamicChoices(session) || session.world.phase === 'ended') {
-    clearNarrativeDynamicChoices(session);
-    emitChoicesReset(res, session.choices);
-    return [];
-  }
-
-  clearNarrativeDynamicChoices(session);
-  emitChoicesReset(res, session.choices);
-  const dynamicChoices = buildLocalDynamicChoices(session, action || {});
-  if (statusMessage) {
-    writeStreamChunk(res, { type: 'status', message: statusMessage });
-  }
-  await emitDynamicChoices(res, session, dynamicChoices);
-  session.choices = mergeChoices(session.choices, dynamicChoices);
-  dynamicChoices.meta = mergeDynamicChoiceMeta(previousMeta, {
-    mode: 'fallback',
-    reason: 'local_dynamic_fallback',
-    detail: 'local-dynamic-fallback'
-  });
-  return dynamicChoices;
-}
-
 function getAuthToken(req) {
   const authHeader = String(req.headers.authorization || '').trim();
   if (authHeader.toLowerCase().startsWith('bearer ')) {
     return authHeader.slice(7).trim();
   }
-  return String(req.headers['x-auth-token'] || '').trim();
+  const headerToken = String(req.headers['x-auth-token'] || '').trim();
+  if (headerToken) return headerToken;
+  return getCookieValue(req, AUTH_COOKIE_NAME);
+}
+
+function getCookieValue(req, name) {
+  const cookieHeader = String(req.headers.cookie || '');
+  if (!cookieHeader || !name) return '';
+  const prefix = `${name}=`;
+  const pair = cookieHeader
+    .split(';')
+    .map((item) => item.trim())
+    .find((item) => item.startsWith(prefix));
+  return pair ? decodeURIComponent(pair.slice(prefix.length)) : '';
+}
+
+function setAuthCookie(res, token) {
+  const safeToken = String(token || '').trim();
+  const maxAge = safeToken ? 60 * 60 * 24 * 30 : 0;
+  const value = safeToken ? encodeURIComponent(safeToken) : '';
+  res.setHeader('Set-Cookie', `${AUTH_COOKIE_NAME}=${value}; Path=/; Max-Age=${maxAge}; HttpOnly; SameSite=Lax`);
 }
 
 function getCurrentUser(req) {
@@ -358,6 +351,7 @@ function loadAccessibleSession(res, sessionId, user) {
 }
 
 function sendAuthPayload(res, payload) {
+  if (payload && payload.token) setAuthCookie(res, payload.token);
   sendJson(res, 200, Object.assign({}, payload, {
     adminSeed: getAdminSeedCredentials()
   }));
@@ -608,13 +602,14 @@ async function routeApi(req, res) {
   if (pathname === '/api/auth/logout' && req.method === 'POST') {
     const token = getAuthToken(req);
     if (token) revokeToken(token);
+    setAuthCookie(res, '');
     sendJson(res, 200, { ok: true });
     return;
   }
 
   if (pathname === '/api/me' && req.method === 'GET') {
     if (!requireUser(res, currentUser)) return;
-    sendAuthPayload(res, { user: currentUser });
+    sendAuthPayload(res, { token: getAuthToken(req), user: currentUser });
     return;
   }
 
@@ -660,6 +655,79 @@ async function routeApi(req, res) {
       sendJson(res, 200, { user });
     } catch (error) {
       sendJson(res, 400, { message: error.message || '权限更新失败。' });
+    }
+    return;
+  }
+
+  if (pathname === '/api/admin/content/manifest' && req.method === 'GET') {
+    if (!requireAdmin(res, currentUser)) return;
+    try {
+      sendJson(res, 200, { manifest: getContentManifest() });
+    } catch (error) {
+      sendJson(res, 500, { message: error.message || '读取内容配置状态失败。' });
+    }
+    return;
+  }
+
+  if (pathname === '/api/admin/content/validate' && req.method === 'POST') {
+    if (!requireAdmin(res, currentUser)) return;
+    try {
+      sendJson(res, 200, { validation: validateContentDraft() });
+    } catch (error) {
+      sendJson(res, 500, { message: error.message || '校验内容配置失败。' });
+    }
+    return;
+  }
+
+  if (pathname === '/api/admin/content/publish' && req.method === 'POST') {
+    if (!requireAdmin(res, currentUser)) return;
+    try {
+      const result = publishDraftContent();
+      const refreshed = require('./game/chronicleV5StateFactory').refreshContentSnapshot();
+      sendJson(res, 200, Object.assign({}, result, { refreshed }));
+    } catch (error) {
+      sendJson(res, 400, {
+        message: error.message || '发布内容配置失败。',
+        validation: error.validation || null
+      });
+    }
+    return;
+  }
+
+  const adminContentMatch = pathname.match(/^\/api\/admin\/content\/([a-zA-Z-]+)(?:\/([^/]+))?$/);
+  if (adminContentMatch && ['GET', 'POST', 'PUT', 'DELETE'].includes(req.method)) {
+    if (!requireAdmin(res, currentUser)) return;
+    const type = adminContentMatch[1].replace(/-([a-z])/g, (_, char) => char.toUpperCase());
+    const entityId = adminContentMatch[2] ? decodeURIComponent(adminContentMatch[2]) : '';
+    if (!CONTENT_TYPES.includes(type)) {
+      sendJson(res, 404, { message: '未知内容类型。' });
+      return;
+    }
+    try {
+      if (req.method === 'GET' && !entityId) {
+        sendJson(res, 200, { type, items: getDraftPreviewEntityList(type) });
+        return;
+      }
+      if (req.method === 'POST' && !entityId) {
+        const body = await readBody(req);
+        const item = saveDraftEntity(type, body || {});
+        sendJson(res, 200, { type, item, validation: validateContentDraft() });
+        return;
+      }
+      if (req.method === 'PUT' && entityId) {
+        const body = await readBody(req);
+        const item = saveDraftEntity(type, Object.assign({}, body || {}, { id: entityId }));
+        sendJson(res, 200, { type, item, validation: validateContentDraft() });
+        return;
+      }
+      if (req.method === 'DELETE' && entityId) {
+        const item = deleteDraftEntity(type, entityId);
+        sendJson(res, 200, { type, item, validation: validateContentDraft() });
+        return;
+      }
+      sendJson(res, 405, { message: '不支持的内容配置操作。' });
+    } catch (error) {
+      sendJson(res, 400, { message: error.message || '内容配置操作失败。' });
     }
     return;
   }
@@ -773,6 +841,7 @@ async function routeApi(req, res) {
       streaming: true,
       architecture: 'frontend-display-backend-engine',
       settings: getPublicRuntimeConfig(),
+      content: getContentManifest(),
       gameTitle: GAME_TITLE,
       monetization: {
         mode: 'trial_turns_and_month_card',

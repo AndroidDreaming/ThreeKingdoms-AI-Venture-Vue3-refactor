@@ -46,6 +46,7 @@ function compactLabeledLines(list, formatter, limit = 3) {
 
 function compactConsequenceTexts(list, limit = 3) {
   return ensureList(list)
+    .filter((item) => item && item.type !== 'resource')
     .slice(0, limit)
     .map((item) => clipText(
       item && (
@@ -57,6 +58,45 @@ function compactConsequenceTexts(list, limit = 3) {
       56
     ))
     .filter(Boolean);
+}
+
+function tierNarrativeLabel(tier) {
+  const key = normalizeSnippet(tier || '').toLowerCase();
+  return {
+    fail: '事情没有办成，阻力已经露出来',
+    mixed: '事情只成了一半，代价和后患都还在场',
+    good: '这一手站住了脚，局面向我这边松动',
+    great: '这一手大获成功，场上的人不得不重新看我'
+  }[key] || '这一手已经由本地规则裁定';
+}
+
+function hasMeaningfulRelationChange(outcome, ledger) {
+  if (normalizeSnippet(outcome && outcome.relationLine || '')) return true;
+  return ensureList(ledger && ledger.consequences).some((item) => item && item.type === 'human' && normalizeSnippet(item.text || ''));
+}
+
+function buildDirectorNotes(state, action, outcome, ledger) {
+  const effectiveLedger = ledger || {};
+  const resolved = effectiveLedger.resolved || {};
+  const notes = [];
+  const tier = normalizeSnippet(resolved.tier || outcome && outcome.tier || '');
+  const summary = normalizeSnippet(resolved.summary || outcome && outcome.summary || '');
+  const changeSummary = normalizeSnippet(resolved.changeSummary || outcome && outcome.changeSummary || '');
+  const relationLine = normalizeSnippet(resolved.relationLine || outcome && outcome.relationLine || '');
+  const actionText = normalizeSnippet(
+    effectiveLedger.action && (effectiveLedger.action.actionText || effectiveLedger.action.text)
+      || action && (action.actionText || action.text || action.raw)
+      || ''
+  );
+
+  if (tier) notes.push(`成败气口：${tierNarrativeLabel(tier)}。`);
+  if (actionText) notes.push(`本回必须围绕这一手展开：${clipText(actionText, 72)}。`);
+  if (summary) notes.push(`已裁定事实：${clipText(summary, 96)}。`);
+  if (changeSummary && changeSummary !== summary) notes.push(`剧情必须体现的变化：${clipText(changeSummary, 96)}。`);
+  if (hasMeaningfulRelationChange(outcome, effectiveLedger) && relationLine) {
+    notes.push(`人物关系的明显变化：${clipText(relationLine, 96)}。`);
+  }
+  return notes.slice(0, 5);
 }
 
 function joinClipped(parts, maxChars = 110) {
@@ -142,9 +182,9 @@ function buildNarrationContext(state, action, outcome, ledger = null) {
   const worldPerception = ensureWorldPerceptionState(gs);
   const worldFermentation = ensureWorldFermentationState(gs);
   const relationFocus = topRelations(state, 3);
-  const rumorFocus = rumorRelations(state, 4);
   const factionFocus = [];
   const consequenceBeats = compactConsequenceTexts(effectiveLedger.consequences, 3);
+  const directorNotes = buildDirectorNotes(state, action, outcome, effectiveLedger);
   const previousSceneTail = clipText(state && state.scene && state.scene.text || '', 120);
   const perceptionLine = clipText(worldPerception.hiddenCurrent || worldPerception.summary || worldPerception.headline, 96);
   const fermentationLine = clipText(worldFermentation.summary || worldFermentation.headline, 96);
@@ -202,24 +242,7 @@ function buildNarrationContext(state, action, outcome, ledger = null) {
       gender: normalizeSnippet(gs.genderLabel || gs.gender || ''),
       sect: normalizeSnippet(gs.sectName || '无门无派'),
       martialRoute: normalizeSnippet(gs.martialRouteName || ''),
-      strategyRoute: normalizeSnippet(gs.strategyRouteName || ''),
-      topStats: topStats(state, 4)
-    },
-    persistentState: {
-      resources: {
-        coins: toNumber(gs.coins, 0),
-        supplies: toNumber(gs.supplies, 0),
-        troops: toNumber(gs.troops, 0)
-      },
-      condition: {
-        health: toNumber(gs.health, 0),
-        fatigue: toNumber(gs.fatigue, 0),
-        morale: toNumber(gs.morale, 0)
-      },
-      standing: {
-        influence: toNumber(gs.influence, 0),
-        renown: toNumber(gs.renown, 0)
-      }
+      strategyRoute: normalizeSnippet(gs.strategyRouteName || '')
     },
     relationshipState: relationFocus.map((item) => ({
       name: item.name,
@@ -229,7 +252,6 @@ function buildNarrationContext(state, action, outcome, ledger = null) {
       loyalty: item.loyalty,
       status: item.status
     })),
-    rumorOnlyPeople: rumorFocus,
     factionState: [],
     currentState: {
       turn: Number(world.turn || 0),
@@ -251,7 +273,8 @@ function buildNarrationContext(state, action, outcome, ledger = null) {
       actionText: currentMove,
       resultTier: normalizeSnippet(effectiveLedger && effectiveLedger.resolved && effectiveLedger.resolved.tier || ''),
       outcomeBeat,
-      consequenceBeats
+      consequenceBeats,
+      directorNotes
     },
     sceneCapsule: {
       openingImage: clipText(firstNonEmpty(previousSceneTail, perceptionLine, fermentationLine), 96),
@@ -259,7 +282,6 @@ function buildNarrationContext(state, action, outcome, ledger = null) {
       humanTension,
       aftertaste,
       peopleInFrame,
-      rumorOnlyPeople: rumorFocus.map((item) => `${item.name}${item.hint ? `: ${item.hint}` : ''}`),
       forcesInFrame: []
     },
     styleProfile: {
@@ -270,7 +292,8 @@ function buildNarrationContext(state, action, outcome, ledger = null) {
       numericRule: '数值是演绎约束，不是播报内容。只能化进手头紧松、伤疲、底气和旁人态度里。',
       relationRule: '关系和势力要通过称呼、试探、反应、让步、逼压、榜文、书札或口信进入场景，不要列表复述。',
       writeAsScene: true,
-      avoidSettlementTone: true
+      avoidSettlementTone: true,
+      directorNotes
     }
   };
 }
@@ -298,6 +321,8 @@ function buildChoiceContext(state, action, outcome, ledger = null, planning = nu
   const effectiveLedger = ledger || buildTurnConsequenceLedger(state, action, outcome);
   const effectivePlanning = planning || buildDynamicPlanningBundle(state, action || {}, { frontierLimit: 8 });
   const softSummary = summarizeSoftStateForContext(gs);
+  const relevantConsequences = ensureList(effectiveLedger.consequences).filter((item) => item && item.type !== 'resource');
+  const directorNotes = buildDirectorNotes(state, action, outcome, effectiveLedger);
   const selectedDynamicChoice = state && state.memory && state.memory.lastSelectedDynamicChoice
     ? {
       text: normalizeSnippet(state.memory.lastSelectedDynamicChoice.text || ''),
@@ -312,8 +337,8 @@ function buildChoiceContext(state, action, outcome, ledger = null, planning = nu
     location: normalizeSnippet(world.currentCityName || ''),
     action: effectiveLedger.action,
     resolved: effectiveLedger.resolved,
-    hardDelta: effectiveLedger.hardDelta,
-    consequences: ensureList(effectiveLedger.consequences).slice(0, 4),
+    directorNotes,
+    consequences: relevantConsequences.slice(0, 4),
     softState: {
       promiseDebt: softSummary.promiseDebt.slice(0, 2),
       moralDebt: softSummary.moralDebt.slice(0, 2),

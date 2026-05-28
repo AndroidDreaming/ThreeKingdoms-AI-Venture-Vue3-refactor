@@ -10,19 +10,18 @@ const {
   MARTIAL_BOTTLENECKS,
   STRATEGY_PATHS
 } = require('./chronicleV5ProgressionConfig');
-const {
-  BACKGROUNDS_CONTENT,
-  SECTS_CONTENT,
-  CITIES_CONTENT,
-  ORIGIN_CITY_IDS,
-  CITY_ROUTE_LINES,
-  TEXT_MAP_GROUPS_CONTENT,
-  FACTIONS_CONTENT,
-  HISTORICAL_RELATIONS,
-  RANDOM_NPC_TEMPLATES,
-  BACKGROUND_RELATION_RULES
-} = require('./chronicleV5ContentConfig');
-const { FIXED_ACTION_CONFIG } = require('../config/chronicle.fixed-actions.config');
+const { getContentSnapshot } = require('./contentRegistry');
+let BACKGROUNDS_CONTENT = [];
+let SECTS_CONTENT = [];
+let CITIES_CONTENT = [];
+let ORIGIN_CITY_IDS = [];
+let CITY_ROUTE_LINES = [];
+let TEXT_MAP_GROUPS_CONTENT = [];
+let FACTIONS_CONTENT = [];
+let HISTORICAL_RELATIONS = [];
+let RANDOM_NPC_TEMPLATES = [];
+let BACKGROUND_RELATION_RULES = {};
+let FIXED_ACTION_CONFIG = [];
 const { getHistoricalPersona } = require('./chronicleV5HistoricalPersonaLibrary');
 const { createMemoryState } = require('./chronicleV5Memory');
 const {
@@ -95,20 +94,37 @@ const MAINLINE_ACTS = [
   }
 ];
 
-BACKGROUNDS.splice(0, BACKGROUNDS.length, ...BACKGROUNDS_CONTENT);
-SECTS.splice(0, SECTS.length, ...SECTS_CONTENT);
-CITIES.splice(0, CITIES.length, ...CITIES_CONTENT);
-FACTIONS.splice(0, FACTIONS.length, ...FACTIONS_CONTENT);
+function applyLoadedContent(snapshot) {
+  const source = snapshot || getContentSnapshot();
+  BACKGROUNDS_CONTENT = source.backgrounds || [];
+  SECTS_CONTENT = source.sects || [];
+  CITIES_CONTENT = source.cities || [];
+  ORIGIN_CITY_IDS = source.originCityIds || [];
+  CITY_ROUTE_LINES = source.routes || [];
+  TEXT_MAP_GROUPS_CONTENT = source.textMapGroups || [];
+  FACTIONS_CONTENT = source.factions || [];
+  HISTORICAL_RELATIONS = source.characters || [];
+  RANDOM_NPC_TEMPLATES = source.randomNpcTemplates || [];
+  BACKGROUND_RELATION_RULES = source.backgroundRelationRules || {};
+  FIXED_ACTION_CONFIG = source.actions || [];
 
-BACKGROUNDS.forEach((item) => {
-  const patch = BACKGROUND_RULES[item.id];
-  if (patch) Object.assign(item, patch);
-});
+  BACKGROUNDS.splice(0, BACKGROUNDS.length, ...BACKGROUNDS_CONTENT);
+  SECTS.splice(0, SECTS.length, ...SECTS_CONTENT);
+  CITIES.splice(0, CITIES.length, ...CITIES_CONTENT);
+  FACTIONS.splice(0, FACTIONS.length, ...FACTIONS_CONTENT);
 
-SECTS.forEach((item) => {
-  const patch = SECT_RULES[item.id];
-  if (patch) Object.assign(item, patch);
-});
+  BACKGROUNDS.forEach((item) => {
+    const patch = BACKGROUND_RULES[item.id];
+    if (patch) Object.assign(item, patch);
+  });
+
+  SECTS.forEach((item) => {
+    const patch = SECT_RULES[item.id];
+    if (patch) Object.assign(item, patch);
+  });
+}
+
+applyLoadedContent(getContentSnapshot());
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -250,7 +266,19 @@ function buildCityRouteIndex() {
   return index;
 }
 
-const CITY_ROUTE_INDEX = buildCityRouteIndex();
+let CITY_ROUTE_INDEX = buildCityRouteIndex();
+
+function refreshContentSnapshot() {
+  applyLoadedContent(getContentSnapshot());
+  CITY_ROUTE_INDEX = buildCityRouteIndex();
+  return {
+    backgrounds: BACKGROUNDS.length,
+    sects: SECTS.length,
+    cities: CITIES.length,
+    routes: CITY_ROUTE_LINES.length,
+    actions: FIXED_ACTION_CONFIG.length
+  };
+}
 
 function buildTextMapAtlas() {
   const fallbackRegions = [];
@@ -2069,6 +2097,7 @@ module.exports = {
   martialRealmOf,
   applyMartialSnapshot,
   applyPathSnapshot,
+  refreshContentSnapshot,
   getMartialPath,
   getStrategyPath,
   stanceForFaction

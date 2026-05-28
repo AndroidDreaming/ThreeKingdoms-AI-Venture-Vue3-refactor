@@ -60,12 +60,9 @@ function battleModeLabel(activeBattle) {
 
 function buildPressureLine(gs) {
   const pressure = [];
-  if (Number(gs.health || 0) <= 38) pressure.push(`健康${Number(gs.health || 0)}`);
-  if (Number(gs.morale || 0) <= 35) pressure.push(`士气${Number(gs.morale || 0)}`);
-  if (Number(gs.supplies || 0) <= 20) pressure.push(`粮秣${Number(gs.supplies || 0)}`);
-  if (Number(gs.coins || 0) <= 40) pressure.push(`钱财${Number(gs.coins || 0)}`);
+  if (Number(gs.morale || 0) <= 35) pressure.push('军心偏虚');
   if (!pressure.length) return '';
-  return `导演指令：当前${pressure.join('、')}偏低，若涉及高压推进，优先写受阻、试探、借势、求援或止损，不要把硬条件不足的事情直接写成顺利达成。`;
+  return `导演提示：${pressure.join('、')}。若涉及高压推进，更适合写成试探、借势、求援或止损，让压力从人群反应和现场迟疑里露出来。`;
 }
 
 function assignmentTouchesAction(assignment, action) {
@@ -105,15 +102,15 @@ function buildRetinueLine(retinue, action) {
     .join('、');
   if (companion && companion.name) {
     const companionRole = companion.activeRoleName ? `，眼下职司偏向${companion.activeRoleName}` : '';
-    return `导演指令：当前指定同行的是${companion.name}${companionRole}。本回让他基于性格、分工和眼前事务，自然给出一两次判断、提醒、动作或补位；不要把他写成空转闲聊，也不要抢走主角的叙事中心。${retinue.narrativeConstraint}`;
+    return `导演提示：当前指定同行的是${companion.name}${companionRole}。可让他基于性格、分工和眼前事务，自然给出一两次判断、提醒、动作或补位；不要把他写成空转闲聊，也不要抢走主角的叙事中心。${retinue.narrativeConstraint}`;
   }
   if (roleText && focusedText) {
-    return `导演指令：当前编制状态为“${retinue.readiness}”，幕下已有人分掌${roleText}。本回若触及${focusedText}的分掌领域，默认写成他们在幕后递来一两句判断、提醒、风声或补位，不要频繁展开无关对话；除非玩家点名、同行，或动作本身就是队伍调度，才让已任命成员走到台前。${retinue.narrativeConstraint}`;
+    return `导演提示：当前编制状态为“${retinue.readiness}”，幕下已有人分掌${roleText}。本回若触及${focusedText}的分掌领域，可以写成他们在幕后递来一两句判断、提醒、风声或补位；除非玩家点名、同行，或动作本身就是队伍调度，才让已任命成员走到台前。${retinue.narrativeConstraint}`;
   }
   if (roleText) {
-    return `导演指令：当前编制状态为“${retinue.readiness}”，幕下已有人分掌${roleText}。已任命成员默认在幕后给建议、回报和补位，不要把他们写成每回都抢镜的对话中心；只有玩家点名、同行，或动作直接命中其职司时，才让他们明显出场。${retinue.narrativeConstraint}`;
+    return `导演提示：当前编制状态为“${retinue.readiness}”，幕下已有人分掌${roleText}。已任命成员更适合在幕后给建议、回报和补位，不要把他们写成每回都抢镜的对话中心；只有玩家点名、同行，或动作直接命中其职司时，才让他们明显出场。${retinue.narrativeConstraint}`;
   }
-  return `导演指令：当前编制状态为“${retinue.readiness}”。${retinue.narrativeConstraint}`;
+  return `导演提示：当前编制状态为“${retinue.readiness}”。${retinue.narrativeConstraint}`;
 }
 
 function buildPromptDirectorLines(state, action, mode = 'narration') {
@@ -145,59 +142,59 @@ function buildPromptDirectorLines(state, action, mode = 'narration') {
 
   if (activeBattle && activeBattle.active) {
     const label = battleModeLabel(activeBattle);
-    lines.push(`导演指令：本回主轴锁定在${label}，只允许围绕当前对手、战局交换、压制反制与收束余波推进，不要把篇幅分散到无关经营、远行或闲谈。`);
+    lines.push(`导演提示：本回主轴锁定在${label}，篇幅应主要围绕当前对手、战局交换、压制反制与收束余波，不要分散到无关经营、远行或闲谈。`);
   } else if (activeEvents.length) {
-    lines.push(`导演指令：本回优先推进“${activeEvents[0].config.title}”这条史势线，至少让人物、势力或地点其中一层发生实质变化，不要只做泛泛铺垫。`);
+    lines.push(`导演提示：本回优先推进“${activeEvents[0].config.title}”这条史势线，让人物、势力或地点至少有一层具体变化，不要只做泛泛铺垫。`);
   } else if (topThread && topThread.title) {
-    lines.push(`导演指令：本回优先承接线索“${normalizeSnippet(topThread.title, '眼前悬着的线头')}”，让它至少前进一步，不要继续悬空。`);
+    lines.push(`导演提示：本回优先承接线索“${normalizeSnippet(topThread.title, '眼前悬着的线头')}”，让它前进一步，不要继续悬空。`);
   } else {
-    lines.push(`导演指令：本回优先服务“${actFocus}”，不要把篇幅平均铺给所有系统。`);
+    lines.push(`导演提示：本回优先服务“${actFocus}”，不要把篇幅平均铺给所有系统。`);
   }
 
   if (nearEvent && !activeEvents.length) {
-    lines.push(`导演指令：${nearEvent.config.title}已经逼近触发阈值，本回若涉及相关人物、地点或势力，应继续加压，不要把势头写散。`);
+    lines.push(`导演提示：${nearEvent.config.title}已经逼近触发阈值，本回若涉及相关人物、地点或势力，应继续加压，不要把势头写散。`);
   }
 
   if (!hasHistoricalDeviation(historical)) {
-    lines.push('导演指令：在真正撬动史势之前，史实人物不得无缘无故脱离原本轨迹来陪游、私奔、走江湖或替主角让路。');
+    lines.push('导演提示：史实人物若还没被玩家真正撬动，就让他们保持自身轨迹；可用传闻、文书、远处身影和旁人口信压出时代重量。');
   }
 
   if (String(action && action.kind || '') === 'jianghu' && !(activeBattle && activeBattle.active)) {
-    lines.push('导演指令：压向江湖默认写成风声、递帖、试探、结识、借势、摸门路与风波前兆；除非明确触发切磋、敌袭或围杀，不要直接写成即时战斗。');
+    lines.push('导演提示：压向江湖通常更适合写成风声、递帖、试探、结识、借势、摸门路与风波前兆；除非明确触发切磋、敌袭或围杀，不要直接写成即时战斗。');
   }
 
   if (world && world.territory && Number(world.territory.governedCount || 0) <= 0) {
-    lines.push('导演指令：当前主角还没有真正拿到任何城池治权，史实人物最多写到结识、照面、试探与借势，不得直接写成已经被正式收进幕下。');
+    lines.push('导演提示：主角尚未握有城池治权；人物关系更适合落在照面、试探、借势和临时人情上。');
   }
 
   if (rumorOnlyNames) {
-    lines.push(`导演指令：${rumorOnlyNames}目前还只停在风闻、露面或远处影子的层级。除非玩家这回主动点名去接、动作直接以其为目标，或关系已经真正做到“已结识”，否则只能把他们写成传闻、帖子、旁人口中的名字或远处身影，不得让他们自己走到台前与主角展开完整对话。`);
+    lines.push(`导演提示：${rumorOnlyNames}仍是风闻或远影。让名字从传闻、帖子、口信、榜文或旁人话里出现，先留距离感。`);
   }
 
   if (worldFermentation && worldFermentation.directorHint) {
-    lines.push(`导演指令：${normalizeSnippet(worldFermentation.directorHint, '')}`);
+    lines.push(`导演提示：${normalizeSnippet(worldFermentation.directorHint, '')}`);
   }
 
   const pressureLine = buildPressureLine(gs);
   if (pressureLine) lines.push(pressureLine);
 
   if (!gs.martialLimitBroken && Number(gs.martialLevel || 0) >= 88) {
-    lines.push('导演指令：武学已逼近常规极限，后续若继续上冲，应优先通过名师、险局、绝境或奇遇推进，不要把普通练功写成还能稳定暴涨。');
+    lines.push('导演提示：武学已逼近常规极限，后续若继续上冲，应优先通过名师、险局、绝境或奇遇推进，不要把普通练功写成还能稳定暴涨。');
   }
 
   const retinueLine = buildRetinueLine(retinue, action);
   if (retinueLine) lines.push(retinueLine);
 
   if (mode === 'choice') {
-    lines.push('导演指令：动态选项必须给出对象、地点或目标；条件不足的方向可以可见，但要写成试探、铺垫、借势或求援，不要直接给完成态。');
-    lines.push('导演指令：避开固定操作盘已经稳定承接的经营、养成、任命与队伍调度；不要预设哪条线天然更优先，只需避开重复、越权、无上下文支撑和模板化动作。');
+    lines.push('导演提示：动态选项应尽量给出对象、地点或目标；条件不足的方向可以可见，但要写成试探、铺垫、借势或求援，不要直接给完成态。');
+    lines.push('导演提示：避开固定操作盘已经稳定承接的经营、养成、任命与队伍调度；不要预设哪条线天然更优先，只需避开重复、越权、无上下文支撑和模板化动作。');
   } else {
-    lines.push('导演指令：正文必须把本地规则已裁定的得失、阻力与后果写实，不能跳过过程，更不能把未满足条件的结果写成已经发生。');
-    lines.push('导演指令：正文严禁直接播报“数值变动”“士气+1”“谋略添一”这类结算语句；若有收益或损耗，只能改写成人心、气力、声势、门路、伤势、疲态与局势回响。');
+    lines.push('导演提示：把本地裁定的得失、阻力与后果写成现场过程，少解释，多用动作、称呼、物件和旁人反应承载。');
+    lines.push('范例：不要写“士气+1”，写“帐外原本低着头的老卒抬眼看了我一下，绑甲的手快了半拍”。');
   }
 
   if (mode !== 'choice') {
-    lines.push('导演指令：严格锁在当下年份与身份语境里，禁止写出后世书名、后见之明、现代对白、现代职业称呼或穿越式旁白；人物对话必须符合其身份、地位、处境与汉末气口。');
+    lines.push('导演提示：人物说话贴住身份、地位和汉末气口；旁白像亲历者，不像后世史评。');
   }
 
   return lines.slice(0, 6);

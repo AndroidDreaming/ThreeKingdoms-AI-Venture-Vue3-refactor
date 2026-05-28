@@ -3,7 +3,9 @@ const { sanitizeChronicleText } = require('./chronicleV5TextSanitizerCleanSafe')
 const { normalizeDirectorProposal } = require('./chronicleV5ChoiceGenerator');
 const { getProviderCandidates } = require('../config/runtimeConfig');
 
-const DIRECTOR_JSON_MARKER = '[[DIRECTOR_JSON]]';
+const TURN_SPLITTER = '=== TURN_SPLITTER ===';
+const LEGACY_DIRECTOR_JSON_MARKER = '[[DIRECTOR_JSON]]';
+const DIRECTOR_SPLITTERS = [TURN_SPLITTER, LEGACY_DIRECTOR_JSON_MARKER];
 const STATUS_REASONING_ONLY = '\u4e91\u7aef\u6a21\u578b\u5df2\u7ecf\u63a5\u901a\uff0c\u4f46\u5f53\u524d\u53ea\u8fd4\u56de\u4e86\u5185\u90e8\u63a8\u6f14\u7247\u6bb5\uff0c\u6b63\u6587\u9996\u6bb5\u4ecd\u672a\u843d\u4e0b\u3002';
 const META_SENTENCE_PATTERN = /^(?:\u55ef[\uff0c,\u3002 ]*|\u597d\u7684[\uff0c,\u3002 ]*|\u73b0\u5728[\uff0c,\u3002 ]*)?(?:\u65f6\u4ee3\u9501\u5b9a|\u573a\u666f\u9501\u5b9a|\u8fd9\u662f\u4e00\u4e2a(?:\u53d9\u4e8b|\u5267\u60c5)\u4efb\u52a1|\u9700\u8981\u6839\u636e(?:\u63d0\u4f9b\u7684)?(?:\u7ed3\u6784\u5316)?\u72b6\u6001\u5305|\u6839\u636e(?:\u63d0\u4f9b\u7684)?(?:\u7ed3\u6784\u5316)?\u72b6\u6001\u5305|\u6211\u9700\u8981\u6839\u636e(?:\u63d0\u4f9b\u7684)?(?:\u7ed3\u6784\u5316)?\u72b6\u6001\u5305|\u9700\u8981\u628a\u5df2\u7ecf\u88c1\u5b9a|\u6b63\u5e38\u7684\u5267\u60c5\u6f14\u7ece)/;
 const CHUNK_PREVIEW_LIMIT = 180;
@@ -490,9 +492,6 @@ function buildNarrationSceneCard(packet) {
   const capsule = narration.sceneCapsule || {};
   const facts = narration.resolvedFacts || {};
   const actor = narration.actorProfile || {};
-  const state = narration.persistentState || {};
-  const condition = state.condition || {};
-  const resources = state.resources || {};
 
   return {
     scene: {
@@ -505,22 +504,13 @@ function buildNarrationSceneCard(packet) {
     protagonist: {
       name: actor.name || '',
       identity: actor.identity || actor.background || '',
-      route: [actor.martialRoute, actor.strategyRoute].filter(Boolean).join(' / '),
-      condition: [
-        condition.health ? `身骨${condition.health}` : '',
-        condition.fatigue ? `疲态${condition.fatigue}` : '',
-        condition.morale ? `士气${condition.morale}` : ''
-      ].filter(Boolean).join('，'),
-      leverage: [
-        resources.coins ? `钱财${resources.coins}` : '',
-        resources.supplies ? `粮秣${resources.supplies}` : '',
-        resources.troops ? `部曲${resources.troops}` : ''
-      ].filter(Boolean).join('，')
+      route: [actor.martialRoute, actor.strategyRoute].filter(Boolean).join(' / ')
     },
     thisMove: {
       action: clipText(facts.actionText || packet.action && packet.action.raw || '', 90),
       verdict: facts.resultTier || packet.adjudication && packet.adjudication.tier || '',
       settledOutcome: clipText(facts.outcomeBeat || packet.adjudication && packet.adjudication.summary || '', 120),
+      directorNotes: ensureList(facts.directorNotes).slice(0, 5).map((item) => clipText(item, 90)),
       visibleConsequences: ensureList(facts.consequenceBeats).slice(0, 3).map((item) => clipText(item, 70))
     },
     dramaticFocus: {
@@ -528,7 +518,6 @@ function buildNarrationSceneCard(packet) {
       humanTension: clipText(capsule.humanTension || '', 130),
       aftertaste: clipText(capsule.aftertaste || '', 130),
       peopleInFrame: ensureList(capsule.peopleInFrame).slice(0, 3).map((item) => clipText(item, 60)),
-      rumorOnlyPeople: ensureList(capsule.rumorOnlyPeople || narration.rumorOnlyPeople).slice(0, 4).map((item) => clipText(item && item.name ? `${item.name}${item.hint ? `：${item.hint}` : ''}` : item, 60)),
       forcesInFrame: ensureList(capsule.forcesInFrame).slice(0, 2).map((item) => clipText(item, 60))
     }
   };
@@ -551,7 +540,6 @@ function buildChoiceSceneCard(packet) {
     aftermath: clipText(choice.aftermath || capsule.aftertaste || current.previousBeat || '', 130),
     usableHooks: {
       people: ensureList(capsule.peopleInFrame || levers.relationHooks).slice(0, 3).map((item) => clipText(item && item.name ? `${item.name}${item.focus ? `：${item.focus}` : ''}` : item, 64)),
-      rumorOnlyPeople: ensureList(capsule.rumorOnlyPeople).slice(0, 4).map((item) => clipText(item, 56)),
       placesOrRoutes: ensureList(levers.routeHooks || planning.frontiers).slice(0, 3).map((item) => clipText(item && typeof item === 'object' ? (item.city || item.title || item.route || '') : item, 50)),
       vulnerabilities: ensureList(levers.vulnerabilities).slice(0, 3).map((item) => clipText(item, 40)),
       assets: ensureList(levers.assets).slice(0, 3).map((item) => clipText(item, 40))
@@ -641,6 +629,7 @@ function extractStructuredTextCandidates(text) {
 
 function looksLikeProposalPayload(payload) {
   if (!payload || typeof payload !== 'object') return false;
+  if (Array.isArray(payload)) return true;
   if (payload.proposal && typeof payload.proposal === 'object') return true;
   return Boolean(
     payload.nextChoices
@@ -652,23 +641,60 @@ function looksLikeProposalPayload(payload) {
   );
 }
 
+function normalizeUnifiedProposal(session, action, payload) {
+  if (!payload || typeof payload !== 'object') return null;
+  const source = Array.isArray(payload)
+    ? { nextChoices: payload }
+    : (payload.proposal && typeof payload.proposal === 'object' ? payload.proposal : payload);
+  const proposal = normalizeDirectorProposal(session, action, source);
+  return proposal && Array.isArray(proposal.nextChoices) && proposal.nextChoices.length
+    ? proposal
+    : null;
+}
+
+function parseProposalTail(text, session, action) {
+  const parsed = safeJsonParseLoose(text);
+  if (!parsed) return { parsed: null, proposal: null };
+  return {
+    parsed,
+    proposal: normalizeUnifiedProposal(session, action, parsed)
+  };
+}
+
+function splitTurnByMarker(text) {
+  const candidate = String(text || '');
+  let found = null;
+  DIRECTOR_SPLITTERS.forEach((marker) => {
+    const index = candidate.indexOf(marker);
+    if (index < 0) return;
+    if (!found || index < found.index) found = { marker, index };
+  });
+  if (!found) return null;
+  return {
+    marker: found.marker,
+    before: candidate.slice(0, found.index),
+    after: candidate.slice(found.index + found.marker.length)
+  };
+}
+
+function longestTurnMarkerLength() {
+  return DIRECTOR_SPLITTERS.reduce((max, marker) => Math.max(max, marker.length), 0);
+}
+
 function parseUnifiedTurnFromCandidate(candidateText, session, action) {
   const candidate = normalizeText(candidateText, '');
   if (!candidate) return null;
 
-  if (candidate.includes(DIRECTOR_JSON_MARKER)) {
-    const parts = candidate.split(DIRECTOR_JSON_MARKER);
-    const narrationPart = stripLeadingMetaNarration(normalizeText(parts[0], ''));
-    const tailText = normalizeText(parts.slice(1).join(DIRECTOR_JSON_MARKER), '');
-    const parsedTail = safeJsonParseLoose(tailText);
-    const proposal = parsedTail
-      ? normalizeDirectorProposal(session, action, parsedTail.proposal || parsedTail)
-      : null;
+  const splitTurn = splitTurnByMarker(candidate);
+  if (splitTurn) {
+    const narrationPart = stripLeadingMetaNarration(normalizeText(splitTurn.before, ''));
+    const tailText = normalizeText(splitTurn.after, '');
+    const parsedTail = parseProposalTail(tailText, session, action);
     return {
       narration: removeAbstractFillerSentences(sanitizeChronicleText(narrationPart, narrationPart)),
-      proposal,
+      proposal: parsedTail.proposal,
       markerSeen: true,
-      proposalParsed: Boolean(parsedTail)
+      proposalParsed: Boolean(parsedTail.parsed)
     };
   }
 
@@ -679,7 +705,7 @@ function parseUnifiedTurnFromCandidate(candidateText, session, action) {
       ''
     );
     const proposal = looksLikeProposalPayload(parsed)
-      ? normalizeDirectorProposal(session, action, parsed.proposal || parsed)
+      ? normalizeUnifiedProposal(session, action, parsed)
       : null;
     if (narrationText || proposal) {
       return {
@@ -805,44 +831,29 @@ function buildUnifiedDirectorPrompt(directorPacket) {
     choiceCardChars: safeStringifyStateBundle(choiceSceneCard).length
   };
   return [
-    '你在扮演一款汉末三国文字游戏的现场叙事导演。',
-    '核心原则：玩家行动是叙事核心；历史不是固定剧本，而是会被玩家选择加速、延后、绕开或改写的动态推演。',
-    '本回只写玩家刚刚选择造成的现场事件，并把它推进到新的可玩局面。',
-    '输入是一张压缩后的场景卡：它只告诉你本回合已经裁定的事实、场面压力、人物张力和余波。',
-    '你的职责是把事实演成一段真正发生在现场的剧情，不是解释状态，也不是复述动作。',
-    '本地规则已经完成合法性、成败、资源与状态裁定。你只能演绎这些既成事实，不能新增结算或反转结果。',
-    '输出必须严格只有两段：正文 + JSON。除此之外什么都不要写。',
-    '第一段是正文，必须用简体中文直接开写，不要标题，不要“根据状态包”“这一回合”“以下是”“作为引擎”这类元话术。',
-    '正文要先落到一个具体现场：我站在什么地方，面前具体有什么人或物，第一件发生的小事是什么。',
-    '正文必须有展开：至少写出一个现场动作、一个明确的信息来源、一个人物或环境反应、一个转折/代价、一个留下余波的收束。',
-    '文风要朴素、有筋骨、能落地。少用比喻，少用形容词，优先写动作、对话、物件、差役、店家、驿卒、书札、榜文、脚步、眼神。',
-    '若涉及交锋，着重写招式、身法、气机、兵势、险意与胜负余韵；若不涉交锋，也要写出人物分寸、场面冷热和局势逼压。',
-    '可以有动作、神态、对话、器物、街巷、灯火、潮气、蹄声、纸墨等细节，但只能写本地已裁定过的事实，不得新增未发生的胜负或资源变化。',
-    '如果正文提到某个名字，必须交代这个名字从哪里来：谁说出口、哪张榜文写着、哪封书札递来、哪名差役盘问，不能只写“我捕捉到几个字眼”。',
-    'rumorOnlyPeople 里的名字不是已结识人物：只能作为传闻、榜文、口信、旁人口中的名字或远处身影；除非本回 action 明确点名接触，不得让他们亲自出场、主动搭话、同行、帮忙或反复围着主角转。',
-    'peopleInFrame 才是本回可以真正出场互动的人。若 peopleInFrame 为空，就让剧情从差役、店家、驿卒、门吏、兵卒、文书、榜文和地方事务展开。',
-    '不要生成“河北豪族、地方豪族、地方豪右、地方势力、部族、士族、宗族、望族、乡豪、强宗”等抽象势力设定；正文和选项都必须落到具体官署、军营、商铺、驿站、门吏、差役、兵卒、文书、榜文、道路和当场人物。',
-    '事件驱动要求：每回至少出现一个新的具体事件钩子，可以是战事军报、官署文书、人物口信、城中纠纷、门派规矩、商路变故、流言来源或追捕盘问。',
-    '非线性历史要求：若玩家行动碰到史实人物、战事、城池或官署，必须写出这一步对历史走向的具体压力；若没有碰到历史主线，就让历史在背景里自行推进一小步，但不要把史实人物拉来陪主角。',
-    '循环打破要求：如果场景看起来只是在赶路、休整、练功或泛泛调查，必须用一个小突发事件把局面推开，例如盘查、误认、递信、榜文改贴、客舍争执、军报入城、熟人传话。',
-    '数值和字段只是背景约束，不能逐项复述；要化成底气、伤疲、手头紧松、名声轻重、人心冷热和局势高低。',
-    '不要把 action、verdict、settledOutcome 或 visibleConsequences 换一种说法念一遍。',
-    '禁止空泛套话：暗流涌动、肃杀、深潭石子、层层涟漪、大棋、风向变了、位置变了、冷冽、虚火、淬炼、真正介入、无关紧要的过客。',
-    '禁止用一整段心理独白替代事件。每两三句里至少要有一个可见动作、具体物件、具体人物反应或一句短对白。',
-    `正文结束后，另起一行，只输出 ${DIRECTOR_JSON_MARKER}；再下一行输出一个 JSON 对象。`,
-    '不要在标记前后添加任何解释。',
+    '你是深谙汉末人情、军府文书、市井风声和古典白话节奏的剧情导演。',
+    '你先写一段可以直接给玩家看的正文。正文只管文学演绎，不要惦记 JSON，也不要提前解释选项。',
+    '正文从现场开笔：一件物、一个人、一句短话、一张榜文、一封书札、一道门槛，任选其一把玩家刚刚这一手落到地上。',
+    '本地规则已经裁定事实。你要把裁定演成过程、阻力、人心和余波；涉及关系变化时，让它通过称呼、眼神、让步、试探或态度变化露出来。',
+    '范例：错误写法：“本回大获成功，张飞关系+5，金钱+100。”',
+    '范例：正确写法：“张飞把酒碗往案上一顿，盯了我片刻，忽然笑出声来。他不再叫我小子，只说：这话有胆。门外亲兵随即递来一只沉甸甸的布囊。”',
+    '范例：错误写法：“疲劳上升，士气下降，剧情继续推进。”',
+    '范例：正确写法：“营火烧得低了，老卒们说话也轻。没人明着退，可每个人系甲的手都比方才慢了一拍。”',
+    '正文可以自由发挥，但只写本回已经发生的现场，不替下一步做决定。',
+    '若场上有可互动人物，优先写人物之间的分寸；若没有，就从差役、店家、驿卒、门吏、兵卒、文书、榜文和地方事务里开局。',
+    '正文里只能点名“正文场景卡”已经给出的人物；未给出的人物不要主动露面，可用门吏、差役、店家、驿卒、兵卒、文书等职能身份承接事件。',
+    '若只是赶路、休整、练功或调查，用一个小事件把局面推开：盘查、误认、递信、榜文改贴、客舍争执、军报入城、熟人传话皆可。',
+    `正文写完后，单独一行输出 ${TURN_SPLITTER}。`,
+    '分隔符之后再输出结构化内容，结构化内容只服务动态选项和导演建议。',
+    `正文结束后，另起一行，只输出 ${TURN_SPLITTER}；再下一行输出一个 JSON 对象。`,
     'JSON 格式必须是：{"proposal":{"summary":"","dramaticQuestion":"","scenePlan":{"surfaceGoal":"","obstacle":"","turnPoint":"","emotionalShift":"","closingBeat":"","tone":"","pace":""},"sceneResidue":["..."],"newRumors":["..."],"npcReactions":[{"targetName":"","warmth":0,"tension":0,"respect":0,"guardedness":0,"curiosity":0,"note":""}],"factionReactions":[{"targetName":"","watchfulness":0,"respect":0,"hostility":0,"leverageFear":0,"note":""}],"threadSuggestions":[{"title":"","domain":"","urgency":1,"note":""}],"nextChoices":[{"text":"","actionText":"","hint":""}]}}',
     'proposal 里的内容只是下一回合建议，不是已经生效的状态。',
     'summary、dramaticQuestion、sceneResidue、newRumors、threadSuggestions 都要短，带火气，能直接落存档。',
-    'nextChoices 必须正好 3 个，并且必须按这个顺序：1. 正常推进 2. 道德两难 3. 反常理但有趣。',
-    'nextChoices 不要写“把某物给某某豪族/地方势力”“拜会某地豪族”“借某股势力”“联络某部族”这类模板句。',
-    '动态选项优先从当场人物、刚发生的余波、可见地点、手头困境和玩家刚选择的行动自然长出；不要把抽象势力当成默认收件人或万能目标。',
-    'Choice 1 要最顺手、最明确地推动当前局势。',
-    'Choice 2 必须让玩家清楚看见代价，代价可以落在人情、承诺、名声、忠义、安全、无辜者、部下或盟友身上。',
-    'Choice 3 必须显得偏门、戏剧化、出人意料，甚至带一点黑色幽默，但仍然要立得住，必须能从当前局势生长出来。',
-    '三个 choice 的 text 不要带固定前缀，不要输出“正路”“代价”“奇手”这类搭配词。',
-    'actionText 如果填写，必须比 text 更具体；hint 如果填写，只提示代价、阻力、诡异点或风险，不要重说标题。',
-    'choice 只能写下一步要做什么，不能把已经完成的后果写成动作。',
+    'nextChoices 必须正好 3 个：第一个顺水推舟，第二个进退维谷，第三个剑走偏锋。',
+    '第一个选择：接住眼前的话头或变故，做出最符合当下常理、最能让事态自然向前发展的应对。',
+    '第二个选择：设计一个扯动软肋的举动，无论怎么做都会得罪一方，必须在道义、人情、名声或安全之间痛苦割肉。',
+    '第三个选择：跳出常规思维，给出一个狡黠、反常、不按套路出牌的动作，合乎情理但出人意料；高危局面可以火中取栗。',
+    '每个 choice 的 text 像玩家真会点下去的动作；actionText 如果填写，要比 text 更具体。',
     'Director packet:',
     JSON.stringify({
       version: packet.version || 'director_turn_v1',
@@ -866,7 +877,7 @@ function createRequestBody(settings, prompt) {
     messages: [
       {
         role: 'system',
-        content: '你是三国文字游戏的叙事引擎。严格按协议输出：先给正文，再给 [[DIRECTOR_JSON]] 和 JSON。不要输出推理、解释、标题、寒暄或任何额外说明。'
+        content: `你是三国文字游戏的叙事导演。先自由写正文，再输出 ${TURN_SPLITTER}，最后输出 JSON。`
       },
       {
         role: 'user',
@@ -971,6 +982,8 @@ async function streamUnifiedDirectorTurn(settings, session, action, directorPack
     let initialNarrationBuffer = '';
     let fullTextDelta = '';
     let fullReasoningDelta = '';
+    let earlyProposal = null;
+    let earlyParsedTail = null;
 
     const flushNarration = async(rawText, force = false) => {
       if (!rawText && !(force && initialNarrationBuffer)) return;
@@ -1012,23 +1025,37 @@ async function streamUnifiedDirectorTurn(settings, session, action, directorPack
       if (markerSeen) {
         proposalTail += textDelta;
         diagnostics.proposalTailChars = proposalTail.length;
+        const parsedTail = parseProposalTail(proposalTail, session, action);
+        if (parsedTail.proposal && parsedTail.proposal.nextChoices.length >= 3) {
+          earlyProposal = parsedTail.proposal;
+          earlyParsedTail = parsedTail.parsed;
+          diagnostics.proposalParsed = true;
+          diagnostics.proposalChoiceCount = earlyProposal.nextChoices.length;
+        }
         return;
       }
 
       narrationBuffer += textDelta;
-      const markerIndex = narrationBuffer.indexOf(DIRECTOR_JSON_MARKER);
-      if (markerIndex >= 0) {
-        const narrationPart = narrationBuffer.slice(0, markerIndex);
+      const splitTurn = splitTurnByMarker(narrationBuffer);
+      if (splitTurn) {
+        const narrationPart = splitTurn.before;
         await flushNarration(narrationPart, true);
-        proposalTail += narrationBuffer.slice(markerIndex + DIRECTOR_JSON_MARKER.length);
+        proposalTail += splitTurn.after;
         narrationBuffer = '';
         markerSeen = true;
         diagnostics.markerSeen = true;
         diagnostics.proposalTailChars = proposalTail.length;
+        const parsedTail = parseProposalTail(proposalTail, session, action);
+        if (parsedTail.proposal && parsedTail.proposal.nextChoices.length >= 3) {
+          earlyProposal = parsedTail.proposal;
+          earlyParsedTail = parsedTail.parsed;
+          diagnostics.proposalParsed = true;
+          diagnostics.proposalChoiceCount = earlyProposal.nextChoices.length;
+        }
         return;
       }
 
-      const holdback = Math.max(DIRECTOR_JSON_MARKER.length + 6, 24);
+      const holdback = Math.max(longestTurnMarkerLength() + 6, 24);
       if (narrationBuffer.length > holdback) {
         const safeChunk = narrationBuffer.slice(0, narrationBuffer.length - holdback);
         narrationBuffer = narrationBuffer.slice(narrationBuffer.length - holdback);
@@ -1113,6 +1140,16 @@ async function streamUnifiedDirectorTurn(settings, session, action, directorPack
         for (const payloadText of drained.payloads) {
           const doneFlag = await handlePayload(payloadText);
           if (doneFlag) break;
+          if (earlyProposal) break;
+        }
+
+        if (earlyProposal) {
+          try {
+            await reader.cancel();
+          } catch (cancelError) {
+            // Ignore cancel errors.
+          }
+          break;
         }
 
         const contentDeadlineMs = sawReasoningOnly
@@ -1126,15 +1163,18 @@ async function streamUnifiedDirectorTurn(settings, session, action, directorPack
         }
       }
 
-      const trailing = drainTransportBuffer(transportBuffer);
-      diagnostics.trailingPayloadCount = trailing.payloads.length;
-      if (trailing.payloads.length) {
-        for (const payloadText of trailing.payloads) {
-          await handlePayload(payloadText);
+      if (!earlyProposal) {
+        const trailing = drainTransportBuffer(transportBuffer);
+        diagnostics.trailingPayloadCount = trailing.payloads.length;
+        if (trailing.payloads.length) {
+          for (const payloadText of trailing.payloads) {
+            await handlePayload(payloadText);
+            if (earlyProposal) break;
+          }
+        } else if (markerSeen) {
+          proposalTail += trailing.remainder;
+          diagnostics.proposalTailChars = proposalTail.length;
         }
-      } else if (markerSeen) {
-        proposalTail += trailing.remainder;
-        diagnostics.proposalTailChars = proposalTail.length;
       }
 
       if (narrationBuffer) {
@@ -1145,6 +1185,29 @@ async function streamUnifiedDirectorTurn(settings, session, action, directorPack
         }
       }
       await flushNarration('', true);
+
+      if (earlyProposal) {
+        const sanitizedNarration = removeAbstractFillerSentences(sanitizeChronicleText(narration.trim(), narration.trim()));
+        if (sanitizedNarration) {
+          diagnostics.proposalParsed = true;
+          diagnostics.proposalChoiceCount = earlyProposal.nextChoices.length;
+          diagnostics.proposalTailChars = proposalTail.length;
+          diagnostics.narrationChars = narration.length;
+          diagnostics.localSanitizedNarrationChars = sanitizedNarration.length;
+          const finalDiagnostics = finalizeAttemptDiagnostics(diagnostics, { status: 'ok_early_tail' });
+          console.log(`[director-stream] ${summarizeAttemptDiagnostics(finalDiagnostics)}`);
+          return {
+            ok: true,
+            narration: sanitizedNarration,
+            proposal: earlyProposal,
+            reason: 'provider_unified_stream_ok',
+            detail: `unified-stream-ok-early:${url}|marker:${markerSeen ? 1 : 0}|tail:${earlyParsedTail ? 1 : 0}|choices:${earlyProposal.nextChoices.length}|narration:1`,
+            diagnostics: Object.assign({}, finalDiagnostics, {
+              markerSeen
+            })
+          };
+        }
+      }
     } catch (error) {
       errors.push(`${url} -> ${error.message}`);
       diagnostics.status = 'stream_error';
@@ -1233,10 +1296,8 @@ async function streamUnifiedDirectorTurn(settings, session, action, directorPack
     }
 
     let sanitizedNarration = removeAbstractFillerSentences(sanitizeChronicleText(narration.trim(), narration.trim()));
-    const parsedTail = safeJsonParseLoose(proposalTail);
-    let normalizedProposal = parsedTail
-      ? normalizeDirectorProposal(session, action, parsedTail.proposal || parsedTail)
-      : null;
+    const parsedTail = parseProposalTail(proposalTail, session, action);
+    let normalizedProposal = parsedTail.proposal;
     const recoveredTurn = !normalizedProposal && fullTextDelta
       ? parseUnifiedTurnFromRawText(fullTextDelta, session, action)
       : null;
@@ -1264,7 +1325,7 @@ async function streamUnifiedDirectorTurn(settings, session, action, directorPack
       markerSeen = true;
       diagnostics.markerSeen = true;
     }
-    diagnostics.proposalParsed = Boolean(parsedTail || normalizedProposal);
+    diagnostics.proposalParsed = Boolean(parsedTail.parsed || normalizedProposal);
     diagnostics.proposalChoiceCount = normalizedProposal && normalizedProposal.nextChoices
       ? normalizedProposal.nextChoices.length
       : 0;
@@ -1281,7 +1342,7 @@ async function streamUnifiedDirectorTurn(settings, session, action, directorPack
         narration: sanitizedNarration,
         proposal: normalizedProposal,
         reason: normalizedProposal ? 'provider_unified_stream_ok' : 'provider_unified_stream_no_tail',
-        detail: `unified-stream-ok:${url}|marker:${markerSeen ? 1 : 0}|tail:${parsedTail ? 1 : 0}|recovered:${recoveredTurn && recoveredTurn.proposal ? 1 : 0}|reasoningRecovered:${reasoningRecoveredTurn && (reasoningRecoveredTurn.narration || reasoningRecoveredTurn.proposal) ? 1 : 0}|choices:${normalizedProposal && normalizedProposal.nextChoices ? normalizedProposal.nextChoices.length : 0}|narration:1`,
+        detail: `unified-stream-ok:${url}|marker:${markerSeen ? 1 : 0}|tail:${parsedTail.parsed ? 1 : 0}|recovered:${recoveredTurn && recoveredTurn.proposal ? 1 : 0}|reasoningRecovered:${reasoningRecoveredTurn && (reasoningRecoveredTurn.narration || reasoningRecoveredTurn.proposal) ? 1 : 0}|choices:${normalizedProposal && normalizedProposal.nextChoices ? normalizedProposal.nextChoices.length : 0}|narration:1`,
         diagnostics: Object.assign({}, finalDiagnostics, {
           markerSeen
         })

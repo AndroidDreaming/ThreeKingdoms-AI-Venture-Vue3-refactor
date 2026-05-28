@@ -178,6 +178,7 @@ watch(
   min-height: 0;
   clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
   background:
+    repeating-radial-gradient(circle at 24% 18%, rgba(255, 247, 229, 0.018) 0 1px, transparent 1px 5px),
     linear-gradient(135deg, rgba(255, 247, 229, 0.035), transparent 28%),
     linear-gradient(180deg, #171412, #100e0c);
   box-shadow:
@@ -270,11 +271,32 @@ watch(
 }
 
 .narrative-card {
+  position: relative;
   min-width: 0;
   padding: 8px 12px;
   background:
+    repeating-radial-gradient(circle at 16% 24%, rgba(255, 247, 229, 0.018) 0 1px, transparent 1px 5px),
     linear-gradient(145deg, rgba(255, 247, 229, 0.035), transparent 42%),
     #171412;
+  overflow: hidden;
+}
+
+.narrative-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, rgba(184, 153, 71, 0.42), transparent) top left / 46% 1px no-repeat,
+    linear-gradient(180deg, transparent, rgba(184, 153, 71, 0.24), transparent) top left / 1px 68% no-repeat;
+  opacity: 0.34;
+  transform: translateX(-52%);
+  transition: opacity 360ms ease;
+}
+
+.narrative-card:hover::after {
+  opacity: 0.72;
+  animation: narrativeCardTrace 5.6s linear infinite;
 }
 
 .narrative-card__kicker {
@@ -411,6 +433,10 @@ watch(
   position: relative;
 }
 
+.narrative-story-html:not(.narrative-story-html--streaming) :deep(.story-paragraph) {
+  animation: narrativeParagraphReveal 520ms cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
 .narrative-story-html :deep(.story-paragraph) {
   margin: 0 0 24px;
   color: #e3d8c8;
@@ -473,7 +499,12 @@ watch(
 .narrative-story-html :deep(.story-person:hover),
 .narrative-story-html :deep(.story-place:hover),
 .narrative-story-html :deep(.story-glossary-term:hover) {
-  background: rgba(184, 153, 71, 0.2);
+  background:
+    radial-gradient(circle at 12% 55%, rgba(205, 169, 105, 0.22) 0 1px, transparent 1.4px),
+    radial-gradient(circle at 84% 36%, rgba(205, 169, 105, 0.18) 0 1px, transparent 1.4px),
+    rgba(184, 153, 71, 0.14);
+  background-size: 10px 10px, 13px 13px, auto;
+  animation: glossaryDust 1.8s ease-in-out infinite;
 }
 
 .narrative-story-html :deep(.story-spacer) {
@@ -560,10 +591,38 @@ watch(
   }
 }
 
+@keyframes narrativeParagraphReveal {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 32% 0);
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes narrativeCardTrace {
+  0% { background-position: -52% 0, 0 -68%; }
+  100% { background-position: 152% 0, 0 168%; }
+}
+
+@keyframes glossaryDust {
+  0%, 100% { background-position: 0 0, 8px 2px, 0 0; }
+  50% { background-position: 7px -3px, 1px 5px, 0 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .narrative-story-html--streaming :deep(.story-paragraph:last-child::before),
   .narrative-story-html--streaming :deep(.story-paragraph:last-child::after),
-  .narrative-stream-tail__cursor {
+  .narrative-stream-tail__cursor,
+  .narrative-story-html:not(.narrative-story-html--streaming) :deep(.story-paragraph),
+  .narrative-card:hover::after,
+  .narrative-story-html :deep(.story-person:hover),
+  .narrative-story-html :deep(.story-place:hover),
+  .narrative-story-html :deep(.story-glossary-term:hover) {
     animation: none;
   }
 }

@@ -42,68 +42,65 @@
           <span></span>
           <strong>左右滑动查看当前三手</strong>
         </div>
-        <div class="mobile-choice-tabs mobile-choice-tabs--dynamic">
-          <button
-            v-for="item in view.mobileDynamicChoiceTabs"
-            :key="`dynamic-tab-${item.key}`"
-            type="button"
-            class="mobile-choice-tab"
-            :class="{ active: view.activeMobileDynamicSlot === item.key }"
-            :disabled="view.interactionBlocked && item.type === 'choice'"
-            @click="view.setActiveMobileDynamicSlot(item.key)"
-          >
-            <span>{{ item.label }}</span>
-            <small>{{ item.note }}</small>
-          </button>
-        </div>
-
-        <div v-if="view.activeMobileDynamicSlotEntry" class="mobile-choice-stage">
-          <button
-            v-if="view.activeMobileDynamicSlotEntry.type === 'choice'"
-            :key="`dynamic-choice-mobile-${view.activeMobileDynamicSlotEntry.slot}-${view.activeMobileDynamicSlotEntry.choice.id}`"
-            class="choice-card choice-card--dynamic mobile-choice-card"
-            :class="{ 'choice-card--disabled': view.activeMobileDynamicSlotEntry.choice.disabled }"
-            :disabled="view.interactionBlocked || view.activeMobileDynamicSlotEntry.choice.disabled"
-            @click="view.submitChoice(view.activeMobileDynamicSlotEntry.choice)"
-          >
-            <div class="choice-top">
-              <span class="choice-name">{{ view.activeMobileDynamicSlotEntry.choice.text }}</span>
-              <div class="choice-tags">
-                <span class="choice-source choice-source--dynamic">当前回合</span>
-                <span class="choice-category">
-                  {{ view.activeMobileDynamicSlotEntry.choice.category || view.dynamicSlotMeta(view.activeMobileDynamicSlotEntry.slot, view.activeMobileDynamicSlotEntry.choice.slotRole).note || '动作' }}
-                </span>
+        <div class="mobile-choice-stage mobile-choice-stage--stacked">
+          <template v-for="entry in view.dynamicChoiceSlots" :key="`mobile-priority-${entry.slot}-${entry.type}-${entry.choice ? entry.choice.id : 'draft'}`">
+            <button
+              v-if="entry.type === 'choice'"
+              class="choice-card choice-card--dynamic mobile-choice-card mobile-choice-card--priority"
+              :class="{ 'choice-card--disabled': entry.choice.disabled, 'mobile-choice-card--active': view.activeMobileDynamicSlot === entry.slot }"
+              :disabled="view.interactionBlocked || entry.choice.disabled"
+              @touchstart="view.setActiveMobileDynamicSlot(entry.slot)"
+              @click="view.submitChoice(entry.choice)"
+            >
+              <div class="mobile-choice-card__rank">第 {{ Number(entry.slot || 0) + 1 }} 手</div>
+              <div class="choice-top">
+                <span class="choice-name">{{ entry.choice.text }}</span>
+                <div class="choice-tags">
+                  <span class="choice-source choice-source--dynamic">当前回合</span>
+                  <span class="choice-category">
+                    {{ entry.choice.category || view.dynamicSlotMeta(entry.slot, entry.choice.slotRole).note || '动作' }}
+                  </span>
+                </div>
               </div>
-            </div>
-            <div class="choice-hint">{{ view.activeMobileDynamicSlotEntry.choice.hint || '这一手已经被局势推到台前。' }}</div>
-            <div v-if="view.choiceForecastText(view.activeMobileDynamicSlotEntry.choice)" class="choice-forecast">
-              {{ view.choiceForecastText(view.activeMobileDynamicSlotEntry.choice) }}
-            </div>
-          </button>
-
-          <div
-            v-else
-            :key="`dynamic-slot-mobile-${view.activeMobileDynamicSlotEntry.slot}-${view.activeMobileDynamicSlotEntry.type}`"
-            class="choice-card choice-card--dynamic choice-card--placeholder mobile-choice-card"
-            :class="{ 'choice-card--drafting': view.activeMobileDynamicSlotEntry.type === 'draft' }"
-          >
-            <div class="choice-top">
-              <span class="choice-name">
-                {{ view.activeMobileDynamicSlotEntry.label || '这一手正在成形' }}
-                <span
-                  v-if="view.activeMobileDynamicSlotEntry.type === 'draft' && view.activeMobileDynamicSlotEntry.draft && view.activeMobileDynamicSlotEntry.draft.isTyping"
-                  class="choice-draft-caret"
-                ></span>
-              </span>
-              <div class="choice-tags">
-                <span class="choice-source choice-source--dynamic">当前回合</span>
-                <span class="choice-category">
-                  {{ view.dynamicSlotMeta(view.activeMobileDynamicSlotEntry.slot, view.activeMobileDynamicSlotEntry.draft && view.activeMobileDynamicSlotEntry.draft.slotRole).note || '铺陈中' }}
-                </span>
+              <div class="choice-hint">{{ entry.choice.hint || '这一手已经被局势推到台前。' }}</div>
+              <div v-if="view.choiceForecastText(entry.choice)" class="choice-forecast">
+                {{ view.choiceForecastText(entry.choice) }}
               </div>
+              <div class="mobile-choice-card__confirm">点击确定落子</div>
+            </button>
+
+            <div
+              v-else
+              class="choice-card choice-card--dynamic choice-card--placeholder mobile-choice-card mobile-choice-card--priority"
+              :class="{ 'choice-card--drafting': entry.type === 'draft', 'mobile-choice-card--active': view.activeMobileDynamicSlot === entry.slot }"
+              @touchstart="view.setActiveMobileDynamicSlot(entry.slot)"
+            >
+              <div class="mobile-choice-card__rank">第 {{ Number(entry.slot || 0) + 1 }} 手</div>
+              <div class="choice-top">
+                <span class="choice-name">
+                  {{ entry.label || '这一手正在成形' }}
+                  <span
+                    v-if="entry.type === 'draft' && entry.draft && entry.draft.isTyping"
+                    class="choice-draft-caret"
+                  ></span>
+                </span>
+                <div class="choice-tags">
+                  <span class="choice-source choice-source--dynamic">当前回合</span>
+                  <span class="choice-category">
+                    {{ view.dynamicSlotMeta(entry.slot, entry.draft && entry.draft.slotRole).note || '铺陈中' }}
+                  </span>
+                </div>
+              </div>
+              <div class="choice-hint">{{ entry.hint || '正文还在收束，很快会落出可选动作。' }}</div>
+              <div class="choice-placeholder-line"></div>
             </div>
-            <div class="choice-hint">{{ view.activeMobileDynamicSlotEntry.hint || '正文还在收束，很快会落出可选动作。' }}</div>
-            <div class="choice-placeholder-line"></div>
+          </template>
+          <div class="mobile-choice-dots" aria-hidden="true">
+            <span
+              v-for="entry in view.dynamicChoiceSlots"
+              :key="`priority-dot-${entry.slot}`"
+              :class="{ active: view.activeMobileDynamicSlot === entry.slot }"
+            ></span>
           </div>
         </div>
       </div>
@@ -1014,6 +1011,134 @@ export default {
   45% {
     transform: translateX(10px);
     opacity: 1;
+  }
+}
+
+@media (max-width: 820px) {
+  .mobile-choice-switch--dynamic::before,
+  .mobile-choice-switch--dynamic::after {
+    display: none;
+  }
+
+  .mobile-choice-stage--stacked {
+    display: grid;
+    gap: 12px;
+    max-height: ~"min(65vh, 560px)";
+    overflow-y: auto;
+    padding: 2px 2px 6px;
+    scroll-snap-type: y proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mobile-choice-card--priority {
+    position: relative;
+    min-height: 136px;
+    padding: 16px 15px 15px;
+    border-radius: 18px;
+    scroll-snap-align: start;
+    transform-origin: center;
+    transition:
+      transform .16s ease,
+      box-shadow .18s ease,
+      border-color .18s ease,
+      background .18s ease;
+    overflow: hidden;
+  }
+
+  .mobile-choice-card--priority::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background:
+      radial-gradient(circle at var(--tap-x, 50%) var(--tap-y, 50%), rgba(236, 211, 168, .2), transparent 34%),
+      linear-gradient(180deg, rgba(255, 244, 227, .04), transparent 45%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .16s ease;
+  }
+
+  .mobile-choice-card--priority:active {
+    transform: scale(.975);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, .34);
+  }
+
+  .mobile-choice-card--priority:focus {
+    z-index: 2;
+    transform: scale(1.018);
+    outline: none;
+    box-shadow:
+      0 18px 42px rgba(0, 0, 0, .42),
+      0 0 0 1px rgba(226, 183, 117, .34);
+  }
+
+  .mobile-choice-card--priority:active::before {
+    opacity: 1;
+  }
+
+  .mobile-choice-card--active {
+    border-color: rgba(226, 183, 117, .42);
+    background:
+      radial-gradient(circle at 16% 0%, rgba(219, 174, 109, .14), transparent 32%),
+      linear-gradient(180deg, rgba(39, 28, 22, .96), rgba(18, 14, 13, .98));
+  }
+
+  .mobile-choice-card__rank {
+    width: fit-content;
+    margin-bottom: 9px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    color: #f0d8b3;
+    background: rgba(255, 244, 227, .07);
+    border: 1px solid rgba(214, 174, 116, .16);
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .mobile-choice-card__confirm {
+    margin-top: 12px;
+    color: rgba(239, 218, 184, .82);
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+
+  .mobile-choice-dots {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+    padding: 8px 0 2px;
+    background: linear-gradient(180deg, transparent, rgba(18, 14, 13, .9) 42%);
+  }
+
+  .mobile-choice-dots span {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: rgba(209, 196, 169, .28);
+    transition: width .16s ease, background .16s ease;
+  }
+
+  .mobile-choice-dots span.active {
+    width: 20px;
+    background: #d5a766;
+  }
+
+  .recommended-strip--hero {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    overflow: visible;
+  }
+
+  .recommended-chip {
+    min-height: 92px;
+    border-radius: 17px;
+    white-space: normal;
+    text-align: left;
   }
 }
 </style>

@@ -16,10 +16,10 @@
       >
         <span class="support-quick__glow" aria-hidden="true"></span>
         <span class="support-quick__copy">
-          <small>{{ supportEntry.title || '支持创作' }}</small>
-          <strong>{{ supportEntry.label || '自愿打赏' }}</strong>
+          <small>{{ supportEntry.title || '残茶一盏' }}</small>
+          <strong>{{ supportEntry.label || '请说书人饮茶' }}</strong>
         </span>
-        <span class="support-quick__hint">{{ supportEntry.hint || supportEntry.value || '扫码随喜' }}</span>
+        <span class="support-quick__hint">{{ supportEntry.hint || supportEntry.value || '茶案已备' }}</span>
       </button>
 
       <button
@@ -181,12 +181,13 @@ function onSystemAction(item) {
   border: 0;
   clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
   background:
-    linear-gradient(135deg, rgba(59, 154, 92, 0.3), rgba(184, 153, 71, 0.1) 58%),
-    linear-gradient(180deg, rgba(31, 50, 31, 0.96), rgba(18, 18, 14, 0.96));
+    repeating-radial-gradient(circle at 18% 26%, rgba(255, 247, 229, 0.018) 0 1px, transparent 1px 5px),
+    linear-gradient(135deg, rgba(140, 38, 38, 0.16), rgba(184, 153, 71, 0.12) 58%),
+    linear-gradient(180deg, rgba(31, 25, 19, 0.96), rgba(18, 16, 14, 0.96));
   box-shadow:
-    inset 0 0 0 1px rgba(101, 202, 129, 0.28),
+    inset 0 0 0 1px rgba(184, 153, 71, 0.2),
     0 14px 28px rgba(0, 0, 0, 0.28);
-  color: #dff5d4;
+  color: #ead9bd;
   cursor: pointer;
   font-family: inherit;
   text-align: left;
@@ -195,11 +196,11 @@ function onSystemAction(item) {
 
 .support-quick:hover {
   transform: translateY(-1px);
-  filter: brightness(1.06);
+  filter: brightness(1.03);
   box-shadow:
-    inset 0 0 0 1px rgba(126, 224, 151, 0.46),
+    inset 0 0 0 1px rgba(205, 169, 105, 0.38),
     0 18px 34px rgba(0, 0, 0, 0.36),
-    0 0 22px rgba(70, 189, 108, 0.12);
+    0 0 22px rgba(184, 153, 71, 0.08);
 }
 
 .support-quick:active {
@@ -213,12 +214,12 @@ function onSystemAction(item) {
   height: 22px;
   border-radius: 999px;
   background:
-    radial-gradient(circle at 42% 36%, #ffffff 0 3px, transparent 4px),
-    radial-gradient(circle, #6ee68b, #248d4e 70%);
+    radial-gradient(circle at 42% 36%, rgba(255, 247, 229, 0.88) 0 2px, transparent 4px),
+    radial-gradient(circle, #c9a76b, #6f4d2c 70%);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.72),
-    0 0 0 5px rgba(78, 204, 113, 0.12),
-    0 0 18px rgba(78, 204, 113, 0.22);
+    inset 0 1px 0 rgba(255, 247, 229, .42),
+    0 0 0 5px rgba(184, 153, 71, 0.08),
+    0 0 18px rgba(184, 153, 71, 0.14);
 }
 
 .support-quick__glow::after {
@@ -226,7 +227,7 @@ function onSystemAction(item) {
   position: absolute;
   inset: -6px;
   border-radius: inherit;
-  border: 1px solid rgba(108, 226, 139, 0.42);
+  border: 1px solid rgba(205, 169, 105, 0.32);
   opacity: 0;
 }
 
@@ -243,7 +244,7 @@ function onSystemAction(item) {
 }
 
 .support-quick__copy small {
-  color: rgba(213, 236, 195, 0.72);
+  color: rgba(226, 207, 171, 0.7);
   font-size: 10px;
   letter-spacing: 0.12em;
   white-space: nowrap;
@@ -251,7 +252,7 @@ function onSystemAction(item) {
 
 .support-quick__copy strong {
   overflow: hidden;
-  color: #efffe4;
+  color: #f0dfbf;
   font-size: 13px;
   letter-spacing: 0.04em;
   text-overflow: ellipsis;
@@ -260,7 +261,7 @@ function onSystemAction(item) {
 
 .support-quick__hint {
   grid-area: hint;
-  color: rgba(213, 236, 195, 0.68);
+  color: rgba(226, 207, 171, 0.62);
   font-size: 11px;
   line-height: 1.25;
 }

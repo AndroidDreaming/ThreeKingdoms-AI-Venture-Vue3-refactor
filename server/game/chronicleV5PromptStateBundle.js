@@ -1023,6 +1023,18 @@ function shrinkPromptBundle(bundle) {
   const mode = next && next.mode ? next.mode : 'narration';
   const targetChars = Number(next && next.contextBudget && next.contextBudget.targetChars || (mode === 'choice' ? 10500 : 11800));
   delete next.facts;
+  if (next.actor && typeof next.actor === 'object') {
+    delete next.actor.resources;
+    delete next.actor.stats;
+    if (next.actor.martial && typeof next.actor.martial === 'object') {
+      delete next.actor.martial.level;
+      delete next.actor.martial.power;
+      delete next.actor.martial.insight;
+    }
+    if (next.actor.strategyRoute && typeof next.actor.strategyRoute === 'object') {
+      delete next.actor.strategyRoute.level;
+    }
+  }
   if (mode === 'choice') delete next.fixedActions;
   if (next.map && next.map.atlas) delete next.map.atlas;
   if (next.retinue && typeof next.retinue === 'object') {

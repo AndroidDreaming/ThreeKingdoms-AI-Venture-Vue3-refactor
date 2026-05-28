@@ -206,8 +206,8 @@
                 <span v-if="view.activePurchaseSku !== 'donate'" class="title-action-button__nudge">愿意再点</span>
                 <span class="support-entry__spark" aria-hidden="true"></span>
                 <span class="support-entry__copy">
-                  <span class="support-entry__title">{{ view.activePurchaseSku === 'donate' ? '收起打赏' : view.donationEntry.triggerLabel }}</span>
-                  <span class="support-entry__sub">{{ view.activePurchaseSku === 'donate' ? '二维码已展开' : '喜欢这局，就随喜支持' }}</span>
+                  <span class="support-entry__title">{{ view.activePurchaseSku === 'donate' ? '收起茶案' : view.donationEntry.triggerLabel }}</span>
+                  <span class="support-entry__sub">{{ view.activePurchaseSku === 'donate' ? '二维码已展开' : '若喜此卷，请饮残茶' }}</span>
                 </span>
                 <span class="support-entry__arrow" aria-hidden="true">{{ view.activePurchaseSku === 'donate' ? '↑' : '↓' }}</span>
               </button>
@@ -218,7 +218,7 @@
                 <div class="purchase-methods__title">{{ view.donationEntry.title }}</div>
                 <div class="donation-panel">
                   <div class="donation-panel__intro">
-                    <strong>不影响游玩，只是给愿意支持的人留个入口。</strong>
+                    <strong>不影响游玩，只是给愿意递茶的人留个入口。</strong>
                     <span>选择一个收款码扫码，或先查看说明再决定。</span>
                   </div>
                   <div class="donation-panel__head">
@@ -239,7 +239,7 @@
                       class="tool-button tool-button--subtle donation-panel__guide-trigger"
                       @click="view.openDonationGuide"
                     >
-                      支持说明
+                      茶案说明
                     </button>
                   </div>
 

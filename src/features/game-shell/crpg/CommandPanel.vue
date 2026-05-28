@@ -15,6 +15,7 @@
         <span
           v-for="(char, index) in splitLabel(group.label)"
           :key="`${group.key}-label-${index}-${char}`"
+          :style="{ '--char-index': index }"
         >
           {{ char }}
         </span>
@@ -89,8 +90,26 @@ function splitLabel(label) {
     0 18px 36px rgba(0, 0, 0, 0.36);
   color: #e3d8c8;
   cursor: pointer;
+  isolation: isolate;
+  overflow: hidden;
   opacity: 0.6;
   transition: all 300ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.command-seal::before {
+  content: '';
+  position: absolute;
+  inset: 18px 8px;
+  z-index: -1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 46% 48%, rgba(184, 153, 71, 0.22), transparent 36%),
+    radial-gradient(circle at 52% 42%, rgba(227, 216, 200, 0.1), transparent 20%),
+    conic-gradient(from 22deg, transparent, rgba(184, 153, 71, 0.14), transparent 38%, rgba(140, 38, 38, 0.08), transparent 72%);
+  filter: blur(7px);
+  opacity: 0;
+  transform: scale(0.72) rotate(-8deg);
+  transition: opacity 420ms ease, transform 520ms cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .command-seal:hover {
@@ -99,6 +118,12 @@ function splitLabel(label) {
   box-shadow:
     inset 0 0 0 1px rgba(184, 153, 71, 0.26),
     0 22px 40px rgba(0, 0, 0, 0.42);
+}
+
+.command-seal:hover::before,
+.command-seal--active::before {
+  opacity: 1;
+  transform: scale(1) rotate(4deg);
 }
 
 .command-seal:active {
@@ -160,6 +185,21 @@ function splitLabel(label) {
   margin-top: 4px;
 }
 
+.command-seal__label span {
+  opacity: 0.72;
+  transform: translateY(0);
+  transition:
+    opacity 260ms ease,
+    transform 260ms cubic-bezier(0.25, 1, 0.5, 1);
+  transition-delay: calc(var(--char-index) * 42ms);
+}
+
+.command-seal:hover .command-seal__label span,
+.command-seal--active .command-seal__label span {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
 .command-seal__sr-label {
   position: absolute;
   width: 1px;
@@ -184,6 +224,14 @@ function splitLabel(label) {
 
   .command-seal {
     flex: 0 0 84px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .command-seal,
+  .command-seal::before,
+  .command-seal__label span {
+    transition: none;
   }
 }
 </style>
